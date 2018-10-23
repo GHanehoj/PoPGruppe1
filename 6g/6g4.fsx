@@ -36,6 +36,16 @@ let cfrac2frac (lst: int list) (i:int) : (int*int) =
     let revLst = List.rev lst.[..i]
     let s = revLst @ [0;0]
     f s i
+// Whitebox test
+printfn "Whitebox test\n"
+// Da alle branches køres igennem ved hver kørsel af funktionen, er det kun 
+// nødvendigt at bruge en enkelt test-case: [3;4;12;4]
+printfn "cfrac2float [3;4;12;4] = 3.245 - %A\n" ((cfrac2float [3;4;12;4]) = 3.245)
+
+// Da alle branches køres igennem ved hver kørsel af funktionen, er det kun 
+// nødvendigt at bruge en enkelt test-case: 3.245
+printfn "float2cfrac 3.245 = [3;4;12;4] - %A\n"  ((float2cfrac 3.245) = [3;4;12;4])
+
 
 // Blackbox test
 printfn "Blackbox test\n"
