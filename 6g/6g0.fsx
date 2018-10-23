@@ -6,7 +6,7 @@
 *)
 
 // Tager en kædebrøk og returnerer det reelle tal, som kædebrøken repræsenterer.
-let rec cfrac2float lst =
+let rec cfrac2float (lst: int list) : float =
   match lst with
     | h::[] -> float h
     | h::t ->  float h +  (1.0 / cfrac2float t)
