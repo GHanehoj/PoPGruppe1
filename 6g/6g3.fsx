@@ -2,11 +2,10 @@ let cfrac2frac (lst: int list) (i:int) : (int*int) =
     let rec f (lst: int list) (i:int) : (int*int) =
         // For at undgå underflow fejl tilføjes 2 sentinel elementer til slutningen (bruges aldrig)
         //printfn "%A %d" lst i
-        if i = -1 then
-            (1,0)
-        elif i = -2 then
-            (0,1)
-        else
+        match i with
+        | -1 -> (1,0)
+        | -2 -> (0,1)
+        | _  ->
             let (tim1,nim1) = f lst.Tail (i-1)
             let (tim2,nim2) = f lst.Tail.Tail (i - 2)
             let t = lst.Head * tim1 + tim2
@@ -19,4 +18,4 @@ let cfrac2frac (lst: int list) (i:int) : (int*int) =
     f s i
  
 let k = [3;4;12;4]
-printfn "%A" (cfrac2frac k 2)
+printfn "%A" (cfrac2frac k 3)

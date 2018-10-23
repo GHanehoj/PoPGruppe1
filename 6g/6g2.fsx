@@ -1,10 +1,9 @@
 let rec frac2cfrac (t:int) (n:int) : (int list) =
     let q = t/n
     let rest = t%n
-    if rest = 0 then
-        [q]
-    else
-        q::frac2cfrac n rest
+    match rest with
+    | 0 -> [q]
+    | _ -> q::frac2cfrac n rest
 
 let t=649
 let n=200
