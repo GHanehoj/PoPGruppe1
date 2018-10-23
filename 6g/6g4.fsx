@@ -49,7 +49,7 @@ printfn "float2cfrac 3.245 = [3;4;12;4] - %A\n"  ((float2cfrac 3.245) = [3;4;12;
 
 
 // Blackbox test
-printfn "Blackbox test\n"
+printfn "Blackbox test:\nHver funktion er afprøvet med forskellige input - Edge-case og tilfældigt.\nPå hver linje ses hvorvidt programmerne returnerer den forventede værdi (true/false)\n"
 // Funktionen kan tage en ikke-tom liste af ints. Vi prøver derfor med følgende input: [3,4,12,4], [5;0;2]
 printfn "cfrac2float:"
 printfn "1: cfrac2float [3;4;12;4] = 3.245 - %A\n2: cfrac2float [5;0;2] = 7 - %A\n" ((cfrac2float [3;4;12;4]) = 3.245) ((cfrac2float [5;0;2]) = 7.0)
@@ -63,7 +63,7 @@ printfn "1: float2cfrac 0 = [0] - %A\n2: float2cfrac 3.245 = [3;4;12;4] - %A\n" 
 printfn "frac2cfrac:"
 printfn "1: frac2cfrac 0 3 = [0] - %A\n2: frac2cfrac 10 3 = [3;3] - %A\n3: frac2cfrac 649 200 = [3;4;12;4] - %A\n" ((frac2cfrac 0 3) = [0]) ((frac2cfrac 10 3) = [3;3]) ((frac2cfrac 649 200) = [3;4;12;4])
 
-// Funktion tager en ikke-tom liste af heltal. Vi prøver derfor med følgende input: [3,4,12,4], [5;0;2]
+// Funktion tager en ikke-tom liste af heltal. Vi prøver derfor med følgende input: [3,4,12,4] 3, [3,4,12,4] 1, [5;0;2] 2
 printfn "cfrac2frac:"
-printfn "1: cfrac2frac [3;4;12;4] = (649, 200) - %A\n2: cfrac2frac [5;0;2] = (7, 1) - %A" ((cfrac2frac [3;4;12;4] 3) = (649,200)) ((cfrac2frac [5;0;2] 2) = (7,1))
+printfn "1: cfrac2frac [3;4;12;4] 3 = (649, 200) - %A\n2: cfrac2frac [3;4;12;4] 1 = (13, 4) - %A\n3: cfrac2frac [5;0;2] 2 = (7, 1) - %A" ((cfrac2frac [3;4;12;4] 3) = (649,200)) ((cfrac2frac [3;4;12;4] 1) = (13,4)) ((cfrac2frac [5;0;2] 2) = (7,1))
 
