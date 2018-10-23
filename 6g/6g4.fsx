@@ -45,8 +45,15 @@ printfn "cfrac2float [3;4;12;4] = 3.245 - %A\n" ((cfrac2float [3;4;12;4]) = 3.24
 
 // Da alle branches køres igennem ved hver kørsel af funktionen, er det kun 
 // nødvendigt at bruge en enkelt test-case: 3.245
-printfn "float2cfrac 3.245 = [3;4;12;4] - %A\n"  ((float2cfrac 3.245) = [3;4;12;4])
+printfn "float2cfrac 3.245 = [3;4;12;4] - %A"  ((float2cfrac 3.245) = [3;4;12;4])
 
+// Da alle branches køres igennem ved hver kørsel af funktionen, er det kun 
+// nødvendigt at bruge en enkelt test-case: (649,200)
+printfn "frac2cfrac 649 200 = [3;4;12;4] - %A" ((frac2cfrac 649 200) = [3;4;12;4])
+
+// Da alle branches køres igennem ved hver kørsel af funktionen, er det kun 
+// nødvendigt at bruge en enkelt test-case: [3;4;12;4]
+printfn "cfrac2frac [3;4;12;4] = (649, 200) - %A" ((cfrac2frac [3;4;12;4] 3) = (649,200))
 
 // Blackbox test
 printfn "Blackbox test:\nHver funktion er afprøvet med forskellige input - Edge-case og tilfældigt.\nPå hver linje ses hvorvidt programmerne returnerer den forventede værdi (true/false)\n"
