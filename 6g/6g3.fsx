@@ -21,5 +21,7 @@ let cfrac2frac (lst: int list) (i:int) : (int*int) =
     
     f revLst
  
+// For at teste at funktionen virker, bruger vi den på kædebrøken [3;4;12;4].
+// Dette burde gerne returnere 649/200 når i er tilstrækkelig høj.
 let k = [3;4;12;4]
-printfn "%A" (cfrac2frac k 0)
+printfn "%A" (cfrac2frac k 3)
