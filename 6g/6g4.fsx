@@ -39,7 +39,7 @@ let cfrac2frac (lst: int list) (i:int) : (int*int) =
 
 // Blackbox test
 printfn "Blackbox test\n"
-// Funktionen kan tage en ikke-tom liste af ints. Vi prøver derfor med følgende input: [3,4,12,4], [5;4;0;2;5]
+// Funktionen kan tage en ikke-tom liste af ints. Vi prøver derfor med følgende input: [3,4,12,4], [5;0;2]
 printfn "cfrac2float:"
 printfn "1: cfrac2float [3;4;12;4] = 3.245 - %A\n2: cfrac2float [5;0;2] = 7 - %A\n" ((cfrac2float [3;4;12;4]) = 3.245) ((cfrac2float [5;0;2]) = 7.0)
 
@@ -48,9 +48,11 @@ printfn "float2cfrac:"
 printfn "1: float2cfrac 0 = [0] - %A\n2: float2cfrac 3.245 = [3;4;12;4] - %A\n" ((float2cfrac 0.0) = [0]) ((float2cfrac 3.245) = [3;4;12;4])
 
 // Funktionen tager to heltal. Af matematiske årsager kan det sidste tal ikke være 0, da dette giver division med 0.
-// Vi prøver 
+// Vi prøver derfor med følgende input: (0,3), (10,3), (649,200)
 printfn "frac2cfrac:"
-printfn "1: frac2cfrac 0 = [0] - %A\n2: frac2cfrac 3.245 = [3;4;12;4] - %A\n" ((frac2cfrac 0.0) = [0]) ((frac2cfrac 3.245) = [3;4;12;4])
+printfn "1: frac2cfrac 0 3 = [0] - %A\n2: frac2cfrac 10 3 = [3;3] - %A\n3: frac2cfrac 649 200 = [3;4;12;4] - %A\n" ((frac2cfrac 0 3) = [0]) ((frac2cfrac 10 3) = [3;3]) ((frac2cfrac 649 200) = [3;4;12;4])
 
+// Funktion tager en ikke-tom liste af heltal. Vi prøver derfor med følgende input: [3,4,12,4], [5;0;2]
 printfn "cfrac2frac:"
+printfn "1: cfrac2frac [3;4;12;4] = (649, 200) - %A\n2: cfrac2frac [5;0;2] = (7, 1) - %A" ((cfrac2frac [3;4;12;4] 3) = (649,200)) ((cfrac2frac [5;0;2] 2) = (7,1))
 
