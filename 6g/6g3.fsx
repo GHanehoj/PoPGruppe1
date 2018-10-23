@@ -22,4 +22,10 @@ let cfrac2frac (lst: int list) (i:int) : (int*int) =
     f revLst
  
 let k = [3;4;12;4]
-printfn "%A" (cfrac2frac k 0)
+printfn "%A" (cfrac2frac k 3)
+
+// Performance test. Da funktionen kalder sig selv to gange, en med n-1 og en med n-2, vil køretiden
+// være fibonacci talrækken, dvs funktionen er O(F_n) hvor F_n er det n'te fibonaccital, og er
+// længden på listen
+let t = List.init 50 (fun x -> 1)
+printfn "%A" (cfrac2frac 8 38)
