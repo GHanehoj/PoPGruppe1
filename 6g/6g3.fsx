@@ -30,4 +30,4 @@ printfn "%A" (cfrac2frac k 3)
 // være fibonacci talrækken, dvs funktionen er O(F_n) hvor F_n er det n'te fibonaccital, og er
 // længden på listen
 let t = List.init 50 (fun x -> 1)
-printfn "%A" (cfrac2frac 8 38)
+printfn "%A" (cfrac2frac t 38)
