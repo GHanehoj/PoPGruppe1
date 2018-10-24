@@ -1,5 +1,5 @@
 (*
-    For at omregne en kædebrøk til det tilsvarende reelle tal, kan formlen for kædebrøkens værdi
+    For at omregne en kædebrøk til det tilsvarende reelle tal, kan formlen for kædebrøkers værdi
     benyttes: q1+1/(q2+1/(q3+...)). Den nemmeste måde at implementere dette er ved en rekursiv funktion,
     som hvis listen kun har et element returnerer værdien, og ellers kalder sig selv på det resterende,
     og lægger det reciprokke af resultatet til den nuværende q-værdi.

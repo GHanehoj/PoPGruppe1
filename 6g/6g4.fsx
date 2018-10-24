@@ -1,3 +1,4 @@
+//Funktionerne indskrives igen, så de forskellige tests kan tilgå dem.
 //6g0
 let rec cfrac2float (lst:int list) : float =
   match lst with
@@ -34,7 +35,6 @@ let cfrac2frac (lst: int list) (i:int) : (int*int) =
             let n = h * nim1 + nim2
             (t,n)
     let revLst = List.rev (lst.[..i])
-    
     f revLst
 
 // Whitebox test
