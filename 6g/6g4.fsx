@@ -38,22 +38,26 @@ let cfrac2frac (lst: int list) (i:int) : (int*int) =
     f revLst
 
 // Whitebox test
-printfn "Whitebox test\n"
+printfn "Whitebox test:\nHver funktion afprøves med et input som sikrer at vi kommer igennem alle forgreninger i koden.\nPå hver linje ses hvorvidt programmerne returnerer den forventede værdi (true/false)\n"
 // Da alle branches køres igennem ved hver kørsel af funktionen, er det kun 
 // nødvendigt at bruge en enkelt test-case: [3;4;12;4]
+printfn "cfrac2float:"
 printfn "cfrac2float [3;4;12;4] = 3.245 - %A\n" ((cfrac2float [3;4;12;4]) = 3.245)
 
 // Da alle branches køres igennem ved hver kørsel af funktionen, er det kun 
 // nødvendigt at bruge en enkelt test-case: 3.245
-printfn "float2cfrac 3.245 = [3;4;12;4] - %A"  ((float2cfrac 3.245) = [3;4;12;4])
+printfn "float2cfrac:"
+printfn "float2cfrac 3.245 = [3;4;12;4] - %A\n"  ((float2cfrac 3.245) = [3;4;12;4])
 
 // Da alle branches køres igennem ved hver kørsel af funktionen, er det kun 
 // nødvendigt at bruge en enkelt test-case: (649,200)
-printfn "frac2cfrac 649 200 = [3;4;12;4] - %A" ((frac2cfrac 649 200) = [3;4;12;4])
+printfn "frac2cfrac:"
+printfn "frac2cfrac 649 200 = [3;4;12;4] - %A\n" ((frac2cfrac 649 200) = [3;4;12;4])
 
 // Da alle branches køres igennem ved hver kørsel af funktionen, er det kun 
 // nødvendigt at bruge en enkelt test-case: [3;4;12;4]
-printfn "cfrac2frac [3;4;12;4] = (649, 200) - %A" ((cfrac2frac [3;4;12;4] 3) = (649,200))
+printfn "cfrac2frac:"
+printfn "cfrac2frac [3;4;12;4] = (649, 200) - %A\n" ((cfrac2frac [3;4;12;4] 3) = (649,200))
 
 // Blackbox test
 printfn "Blackbox test:\nHver funktion er afprøvet med forskellige input - Edge-case og tilfældigt.\nPå hver linje ses hvorvidt programmerne returnerer den forventede værdi (true/false)\n"
@@ -73,4 +77,3 @@ printfn "1: frac2cfrac 0 3 = [0] - %A\n2: frac2cfrac 10 3 = [3;3] - %A\n3: frac2
 // Funktion tager en ikke-tom liste af heltal. Vi prøver derfor med følgende input: [3,4,12,4] 3, [3,4,12,4] 1, [5;0;2] 2
 printfn "cfrac2frac:"
 printfn "1: cfrac2frac [3;4;12;4] 3 = (649, 200) - %A\n2: cfrac2frac [3;4;12;4] 1 = (13, 4) - %A\n3: cfrac2frac [5;0;2] 2 = (7, 1) - %A" ((cfrac2frac [3;4;12;4] 3) = (649,200)) ((cfrac2frac [3;4;12;4] 1) = (13,4)) ((cfrac2frac [5;0;2] 2) = (7,1))
-
