@@ -1,8 +1,13 @@
 module Awari
-type pit = // intentionally left empty
-type board = // intentionally left empty
+open System
 type player = Player1 | Player2
-
+type pit = {
+  index : int
+  beanCount: int
+}
+type board = {
+  pits : pit list
+}
 // intentionally many missing implementations and additions
 
 let turn (b : board) (p : player) : board =
