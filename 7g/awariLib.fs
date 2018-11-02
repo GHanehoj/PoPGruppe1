@@ -7,6 +7,13 @@ type pit = {
 }
 type board = pit list 
 
+let printBoard (b:board) : unit = 
+    let pitsToString acc i = acc + sprintf "%3i" i.beanCount
+    let player2String = List.fold pitsToString " " (List.rev b.[7..12])
+    let player1String = List.fold pitsToString " " (b.[0..5])
+    let homePitString = sprintf "%i%21i" b.[13].beanCount b.[6].beanCount 
+    printfn "%s\n%s\n%s" player1String homePutString player2String
+
 let isHome (b:board) (p:player) (i:pit) : bool = 
     let pitPlayer = if i.index < 7 then Player1 else Player2
     (pitPlayer = p) && (i.index%7=6)
@@ -19,7 +26,6 @@ let getMove (b:board) (p:player) (s:string) : pit =
   match p with
   | Player1 -> b.[inputPit-1]
   | Player2 -> b.[inputPit+6]
-
 
 let turn (b : board) (p : player) : board =
   let rec repeat (b: board) (p: player) (n: int) : board =
