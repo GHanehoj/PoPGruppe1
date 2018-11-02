@@ -1,8 +1,13 @@
 module Awari
-type pit = int
-type board = pit list
+open System
 type player = Player1 | Player2
-
+type pit = {
+  index : int
+  beanCount: int
+}
+type board = {
+  pits : pit list
+}
 // intentionally many missing implementations and additions
 
 let turn (b : board) (p : player) : board =
