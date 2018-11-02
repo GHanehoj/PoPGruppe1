@@ -11,15 +11,6 @@ let isHome (b:board) (p:player) (i:pit) : bool =
     let pitPlayer = if i.index < 7 then Player1 else Player2
     (pitPlayer = p) && (i.index%7=6)
 
-let isGameOver (b:board) : Boolean =
-  let mutable player1Beans = 0
-  let mutable player2Beans = 0
-  for pit in b do
-    if pit.index%7<>6 then
-      if pit.index >6 then player1Beans <- player1Beans + pit.beanCount
-      if pit.index <6 then player2Beans <- player2Beans + pit.beanCount
-  (player1Beans = 0) || (player2Beans = 0)
-
 let getMove (b:board) (p:player) (s:string) : pit = 
   printfn "%s" s
   let mutable inputPit = int (System.Console.ReadLine ())
