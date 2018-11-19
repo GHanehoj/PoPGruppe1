@@ -10,8 +10,6 @@ let newPlayer (p:player) :player =
     |Player1 -> Player2
     |Player2 -> Player1
 
- 
-
 let boardSize = 14
 
 let replaceAtIndex (index:int) (ni:pit) (b:board) : board =
@@ -34,7 +32,7 @@ let addBean (op:pit) (cp:pit) : pit =
         {cp with beanCount = beanSum}
 
 let updateLastPit (b:board) (p:player) (i:pit) : (board*pit) = 
-    if i.beanCount = 1 then
+    if i.beanCount = 1 and i.index % 7 <> 6 then
         let home = getHome b p
         let oppositePit = b.[12 - i.index]
         let updatedBoard =
