@@ -1,4 +1,4 @@
-//module Awari
+module Awari
 type player = Player1 | Player2
 type pit = {
   index : int
@@ -46,6 +46,22 @@ let getHome (b:board) (p:player):pit =
     |Player1 -> b.[6]
     |Player2 -> b.[13]
 
+// Opdaterer det sidste felt, hvis dette felt kun indeholder 1 bønne, dvs. distribute endte i et tomt felt
+// ellers returnerers blot den ivne konfiguration af felter 
+let updateLastPit (b:board) (p:player) (i:pit) : (board*pit) = 
+    if i.beanCount = 1 && i.index % 7 <> 6 then
+        let home = getHome b p
+        let oppositePit = b.[12 - i.index]
+        let updatedBoard =
+            b 
+            |> (replaceAtIndex home.index {home with beanCount = home.beanCount + i.beanCount + oppositePit.beanCount })
+            |> (replaceAtIndex (oppositePit.index) {oppositePit with beanCount = 0}) 
+            |> (replaceAtIndex i.index {i with beanCount = 0}) 
+        (updatedBoard,i) 
+    else
+       (b,i) 
+
+
 // Hovedfunktionen til at uddele bønnerne på et specifikt felt ud til alle de efterfølgende felter, 
 // samt fjerne de oprindelige bønder i startfeltet.
 let distribute (b:board) (p:player) (i:pit) : (board*pit) =
@@ -65,21 +81,7 @@ let distribute (b:board) (p:player) (i:pit) : (board*pit) =
         let nb = List.map (addBean i) b
         updateLastPit nb p ni
 
-// 
-let updateLastPit (b:board) (p:player) (i:pit) : (board*pit) = 
-    if i.beanCount = 1 && i.index % 7 <> 6 then
-        let home = getHome b p
-        let oppositePit = b.[12 - i.index]
-        let updatedBoard =
-            b 
-            |> (replaceAtIndex home.index {home with beanCount = home.beanCount + i.beanCount + oppositePit.beanCount })
-            |> (replaceAtIndex (oppositePit.index) {oppositePit with beanCount = 0}) 
-            |> (replaceAtIndex i.index {i with beanCount = 0}) 
-        (updatedBoard,i) 
-    else
-       (b,i) 
-
-
+// Funktionen der får et input fra brugeren, samt validerer dette input
 let rec getMove (b:board) (p:player) (s:string) : pit = 
   printfn "%s" s
   let inputPit = int (System.Console.ReadLine ())
@@ -91,6 +93,8 @@ let rec getMove (b:board) (p:player) (s:string) : pit =
     | Player1 -> b.[inputPit-1]
     | Player2 -> b.[inputPit+6]
 
+// Funktionen der holder styr på turen, dvs om den nuværrende spiller
+// skal have en tur til, eller om det er en ny spiller
 let turn (b : board) (p : player) : board =
   let rec repeat (b: board) (p: player) (n: int) : board =
     printBoard b
@@ -108,6 +112,8 @@ let turn (b : board) (p : player) : board =
       repeat newB p (n + 1)
   repeat b p 0 
 
+// Funktionen der skifter til ny spiller, skulle den gamle
+// ikke længere have sin tur.
 let rec play (b : board) (p : player) : board =
   if isGameOver b then
     b
@@ -119,11 +125,11 @@ let rec play (b : board) (p : player) : board =
       else
         Player1
     play newB nextP
-
+// Starter spillet med standard brætopsætning
 let startGame () = 
     let b = List.init 14 (fun x -> {index = x; beanCount = if x % 7 = 6 then 0 else 3})
     let p = Player1
 
     play b p |> ignore
 
-startGame ()
+//startGame ()
