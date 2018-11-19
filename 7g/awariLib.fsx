@@ -8,6 +8,8 @@ type board = pit list
 
 let boardSize = 14
 
+// Hjælpefunktion, der udskriver spillepladen.
+// Player1 har den øverste række, mens Player2 har den nederste
 let printBoard (b:board) : unit = 
     let pitsToString acc i = acc + sprintf "%3i" i.beanCount
     let player2String = List.fold pitsToString " " (List.rev b.[7..12])
@@ -15,10 +17,12 @@ let printBoard (b:board) : unit =
     let homePitString = sprintf "%i%21i" b.[13].beanCount b.[6].beanCount 
     printfn "%s\n%s\n%s" player2String homePitString player1String
 
+// Hjælpefunktion til at bestemme om et bestemt felt er en bestemt spillers hjemmefelt
 let isHome (b:board) (p:player) (i:pit) : bool = 
     let pitPlayer = if i.index < 7 then Player1 else Player2
     (pitPlayer = p) && (i.index%7=6)
 
+// Hjælpefunktion til at bestemme om en brætkonfiguration medfører at spillet er slut
 let isGameOver (b:board) : bool =
   let count (x:int,y:int) i:pit : int*int =
     if i.index%7<>6 then
@@ -30,26 +34,38 @@ let isGameOver (b:board) : bool =
   (p1Beans = 0 || p2Beans = 0)
 
 
-
+// Hjæplefunktion til at erstatte feltet i et bestemt index med et givent felt.
 let replaceAtIndex (index:int) (ni:pit) (b:board) : board =
     let rep (currentIndex:int) (i:pit) =
         if currentIndex = index then ni else i;
     List.mapi rep b
 
+// Hjælpefunktion til at få hjemmefeltet for en given spiller
 let getHome (b:board) (p:player):pit =
     match p with
     |Player1 -> b.[6]
     |Player2 -> b.[13]
 
-let addBean (op:pit) (cp:pit) : pit =
-    let indexDiff = (cp.index - op.index - 1 + boardSize) % boardSize
-    // Should the chosen pit hold more than 14 beans
-    let beanSum = (if cp <> op then cp.beanCount else 0) + op.beanCount / boardSize 
-    if indexDiff < op.beanCount then
-        {cp with beanCount = beanSum + 1}
+// Hovedfunktionen til at uddele bønnerne på et specifikt felt ud til alle de efterfølgende felter, 
+// samt fjerne de oprindelige bønder i startfeltet.
+let distribute (b:board) (p:player) (i:pit) : (board*pit) =
+    let addBean (op:pit) (cp:pit) : pit =
+        let indexDiff = (cp.index - op.index - 1 + boardSize) % boardSize
+        
+        // Skulle det valgte felt indeholde nok bønder til at komme hele vejen rundt.
+        let beanSum = (if cp <> op then cp.beanCount else 0) + op.beanCount / boardSize 
+        if indexDiff < op.beanCount then
+            {cp with beanCount = beanSum + 1}
+        else
+            {cp with beanCount = beanSum}
+    if i.beanCount = 0 then (b,i)
     else
-        {cp with beanCount = beanSum}
+        let lastIndex = (i.index + i.beanCount) % boardSize 
+        let ni = b.[lastIndex]
+        let nb = List.map (addBean i) b
+        updateLastPit nb p ni
 
+// 
 let updateLastPit (b:board) (p:player) (i:pit) : (board*pit) = 
     if i.beanCount = 1 && i.index % 7 <> 6 then
         let home = getHome b p
@@ -63,20 +79,11 @@ let updateLastPit (b:board) (p:player) (i:pit) : (board*pit) =
     else
        (b,i) 
 
-let distribute (b:board) (p:player) (i:pit) : (board*pit) =
-    if i.beanCount = 0 then (b,i)
-    else
-        let lastIndex = (i.index + i.beanCount) % boardSize 
-        let ni = b.[lastIndex]
-        let nb = List.map (addBean i) b
-        updateLastPit nb p ni
-
-
 
 let rec getMove (b:board) (p:player) (s:string) : pit = 
   printfn "%s" s
   let inputPit = int (System.Console.ReadLine ())
-  if not (List.contains inputPit [1;2;3;4;5;6]) then
+  if not (1 <= inputPit && inputPit<= 6) then
     do printfn "Incorrect input, try again with one of the pits 1-6"
     getMove b p s  
   else
@@ -113,8 +120,10 @@ let rec play (b : board) (p : player) : board =
         Player1
     play newB nextP
 
-let b = List.init 14 (fun x -> {index = x; beanCount = 3})
-let p = Player1
+let startGame () = 
+    let b = List.init 14 (fun x -> {index = x; beanCount = if x % 7 = 6 then 0 else 3})
+    let p = Player1
 
-play b p |> ignore
+    play b p |> ignore
 
+startGame ()
