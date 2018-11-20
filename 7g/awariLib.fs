@@ -15,10 +15,10 @@ let printBoard (b:board) : unit =
     let player2String = List.fold pitsToString " " (List.rev b.[7..12])
     let player1String = List.fold pitsToString " " (b.[0..5])
     let homePitString = sprintf "%i%21i" b.[13].beanCount b.[6].beanCount 
-    printfn "%s\n%s\n%s" player2String homePitString player1String
+    printfn "%s\n%s\n%s\n" player2String homePitString player1String
 
 // Hjælpefunktion til at bestemme om et bestemt felt er en bestemt spillers hjemmefelt
-let isHome (b:board) (p:player) (i:pit) : bool = 
+let isHome (p:player) (i:pit) : bool = 
     let pitPlayer = if i.index < 7 then Player1 else Player2
     (pitPlayer = p) && (i.index%7=6)
 
@@ -47,7 +47,7 @@ let getHome (b:board) (p:player):pit =
     |Player2 -> b.[13]
 
 // Opdaterer det sidste felt, hvis dette felt kun indeholder 1 bønne, dvs. distribute endte i et tomt felt
-// ellers returnerers blot den ivne konfiguration af felter 
+// ellers returnerers blot den givne konfiguration af felter 
 let updateLastPit (b:board) (p:player) (i:pit) : (board*pit) = 
     if i.beanCount = 1 && i.index % 7 <> 6 then
         let home = getHome b p
@@ -83,34 +83,56 @@ let distribute (b:board) (p:player) (i:pit) : (board*pit) =
         updateLastPit nb p ni
 
  
+let rec getAiMove (b:board) (p:player) (cIndex:int) (cMax:int) (maxIndex:int)= 
+  let (hypoBoard, hypoFinalPit) = distribute b p b.[cIndex]
+  let hypoHome = getHome hypoBoard p
+  let home = getHome b p
+  let homeDiff = hypoHome.beanCount-home.beanCount
+  let hypoMax = (if (isHome p hypoFinalPit) then 100 else homeDiff)
+
+  if (cIndex % 7) = 5 then
+    if hypoMax > cMax then
+      b.[cIndex]
+    else
+      b.[maxIndex]
+  else
+    if hypoMax > cMax then
+      getAiMove b p (cIndex+1) hypoMax cIndex
+    else
+      getAiMove b p (cIndex+1) cMax maxIndex
 
 
 // Funktionen der får et input fra brugeren, samt validerer dette input
-let rec getMove (b:board) (p:player) (s:string) : pit = 
-  printfn "%s" s
-  let inputString = System.Console.ReadLine () 
-  if not (List.contains inputString ["1";"2";"3";"4";"5";"6"]) then
-    do printfn "Incorrect input, try again with one of the pits 1-6"
-    getMove b p s  
+let rec getMove (gameType:int) (b:board) (p:player) (s:string) : pit = 
+  if (gameType = 1 || (gameType = 2 && p=Player1))then
+    printfn "%s" s
+    let inputString = System.Console.ReadLine () 
+    if not (List.contains inputString ["1";"2";"3";"4";"5";"6"]) then
+      do printfn "Incorrect input, try again with one of the pits 1-6"
+      getMove gameType b p s  
+    else
+      let inputPit = int (inputString)
+      match p with
+      | Player1 -> b.[inputPit-1]
+      | Player2 -> b.[inputPit+6]
   else
-    let inputPit = int (inputString)
     match p with
-    | Player1 -> b.[inputPit-1]
-    | Player2 -> b.[inputPit+6]
+    | Player1 -> getAiMove b p 0 0 0
+    | Player2 -> getAiMove b p 7 0 0
 
 // Funktionen der holder styr på turen, dvs om den nuværrende spiller
 // skal have en tur til, eller om det er en ny spiller
-let turn (b : board) (p : player) : board =
+let turn (gameType : int) (b : board) (p : player) : board =
   let rec repeat (b: board) (p: player) (n: int) : board =
     printBoard b
     let str =
       if n = 0 then
-        sprintf "Player %A's move? " p
+        sprintf "%A's move? " p
       else 
         "Again? "
-    let i = getMove b p str
+    let i = getMove gameType b p str
     let (newB, finalPit)= distribute b p i
-    if not (isHome newB p finalPit) 
+    if not (isHome p finalPit) 
        || (isGameOver b) then
       newB
     else
@@ -119,22 +141,28 @@ let turn (b : board) (p : player) : board =
 
 // Funktionen der skifter til ny spiller, skulle den gamle
 // ikke længere have sin tur.
-let rec play (b : board) (p : player) : board =
+let rec play (gameType : int) (b : board) (p : player) : board =
   if isGameOver b then
     b
   else
-    let newB = turn b p
+    let newB = turn gameType b p
     let nextP =
       if p = Player1 then
         Player2
       else
         Player1
-    play newB nextP
+    play gameType newB nextP
 // Starter spillet med standard brætopsætning
 let startGame () = 
     let b = List.init 14 (fun x -> {index = x; beanCount = if x % 7 = 6 then 0 else 3})
     let p = Player1
 
-    play b p |> ignore
+    play 1 b p |> ignore
+
+let startAiGame () = 
+    let b = List.init 14 (fun x -> {index = x; beanCount = if x % 7 = 6 then 0 else 3})
+    let p = Player1
+
+    play 2 b p |> ignore
 
 //startGame ()
