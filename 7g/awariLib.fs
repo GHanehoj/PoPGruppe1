@@ -156,7 +156,7 @@ let rec play (gameType : int) (b : board) (p : player) : board =
     match (b.[6].beanCount - b.[13].beanCount) with
     | n when n > 0 -> printfn "Game over! The winner is player 1!"
     | n when n < 0 -> printfn "Game over! The winner is player 2!"
-    | n            -> printfn "Game over! It was a draw!"
+    | _            -> printfn "Game over! It was a draw!"
     b
   else
     let newB = turn gameType b p
@@ -178,5 +178,3 @@ let startAiGame () =
     let p = Player1
 
     play 2 b p |> ignore
-
-//startGame ()
