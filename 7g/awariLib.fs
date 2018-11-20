@@ -135,9 +135,8 @@ let rec getMove (gameType:int) (b:board) (p:player) (s:string) : pit =
       | Player1 -> b.[inputPit-1]
       | Player2 -> b.[inputPit+6]
   else
-    match p with
-    | Player1 -> getAiMove b p 0 0 0
-    | Player2 -> getAiMove b p 7 0 0
+    do printfn "Ai's move:"
+    getAiMove b p 7 0 0
 
 // Funktionen der holder styr på turen, dvs om den nuværrende spiller
 // skal have en tur til, eller om det er en ny spiller
@@ -146,7 +145,7 @@ let turn (gameType : int) (b : board) (p : player) : board =
     printBoard b
     let str =
       if n = 0 then
-        sprintf "%A's move? " p
+        sprintf "%A's move:" p
       else 
         "Again? "
     let i = getMove gameType b p str
@@ -166,7 +165,7 @@ let rec play (gameType : int) (b : board) (p : player) : board =
     match (b.[6].beanCount - b.[13].beanCount) with
     | n when n > 0 -> printfn "Game over! The winner is player 1!"
     | n when n < 0 -> printfn "Game over! The winner is player 2!"
-    | n            -> printfn "Game over! It was a draw!"
+    | _            -> printfn "Game over! It was a draw!"
     b
   else
     let newB = turn gameType b p
@@ -188,5 +187,3 @@ let startAiGame () =
     let p = Player1
 
     play 2 b p |> ignore
-
-//startGame ()
