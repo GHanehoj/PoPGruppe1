@@ -88,7 +88,7 @@ let rec getAiMove (b:board) (p:player) (cIndex:int) (cMax:int) (maxIndex:int)=
   let hypoHome = getHome hypoBoard p
   let home = getHome b p
   let homeDiff = hypoHome.beanCount-home.beanCount
-  let hypoMax = (if (isHome p hypoFinalPit) then 100 else homeDiff)
+  let hypoMax = (if (isHome p hypoFinalPit) then 5 else homeDiff)
 
   if (cIndex % 7) = 5 then
     if hypoMax > cMax then
@@ -133,7 +133,7 @@ let turn (gameType : int) (b : board) (p : player) : board =
     let i = getMove gameType b p str
     let (newB, finalPit)= distribute b p i
     if not (isHome p finalPit) 
-       || (isGameOver b) then
+       || (isGameOver newB) then
       newB
     else
       repeat newB p (n + 1)
@@ -143,6 +143,11 @@ let turn (gameType : int) (b : board) (p : player) : board =
 // ikke længere have sin tur.
 let rec play (gameType : int) (b : board) (p : player) : board =
   if isGameOver b then
+    printBoard b
+    match (b.[6].beanCount - b.[13].beanCount) with
+    | n when n > 0 -> printfn "Game over! The winner is player 1!"
+    | n when n < 0 -> printfn "Game over! The winner is player 2!"
+    | n            -> printfn "Game over! It was a draw!"
     b
   else
     let newB = turn gameType b p
