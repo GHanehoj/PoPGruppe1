@@ -10,8 +10,8 @@ let rec cfrac2float (lst: int list) : float =
   match lst with
     | h::[] -> float h
     | h::t ->  float h +  (1.0 / cfrac2float t)
-    | _ -> 0.0 // Dette er ikke en valid struktur, og er kun tilstede for at gøre compileren glad
+    | _ -> failwith "Empty list" // Dette er ikke en valid struktur, og er kun tilstede for at gøre compileren glad
 
 // For at teste om koden virker, bruger vi funktionen på kædebrøken [3;4;12;4].
 // Det forventede resultat er 3.245, hvilket også er hvad vi får.
-printfn "%f" (cfrac2float [3;4;12;4])
+printfn "%f" (cfrac2float [])
