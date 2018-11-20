@@ -1,4 +1,4 @@
-#r 
+#r "awariLib" 
 open Awari
 // Ikke alle funktioner bliver testet, da funktionerne, 
 // der skaber interaktion med brugeren har sideeffekter, 
@@ -35,13 +35,20 @@ let getHomeTest () =
     printfn "Player 2:              %b" (getHome b Player2 = b.[13])
 
 let updateLastPitTest () =
-    let ba  = [0;0;0;0;0;1;0;2;1;0;0;0;0;0]
-    let nba = [0;0;0;0;0;0;3;0;1;0;0;0;0;0]
-    printfn "Update last pit empty: %b" (updateLastPitTest ba Player1 ba.[5] = nba)
+    let f (l: int list) x = l.[x]
+    
+    let listba  = [0;0;0;0;0;1;0;2;1;0;0;0;0;0]
+    let listnba = [0;0;0;0;0;0;3;0;1;0;0;0;0;0]
+    let ba = createBoard (f listba)
+    let nba = createBoard (f listnba)
+    printfn "Update last pit empty: %b" (fst (updateLastPit ba Player1 ba.[5]) = nba)
+    
 
-    let bb  = [0;0;0;0;1;2;0;2;1;0;0;0;0;0]
-    let nbb = [0;0;0;0;1;2;0;2;1;0;0;0;0;0]
-    printfn "Update last pit bean:  %b" (updateLastPitTest bb Player1 ba.[5] = nbb)
+    let listbb  = [0;0;0;0;1;2;0;2;1;0;0;0;0;0]
+    let listnbb = [0;0;0;0;1;2;0;2;1;0;0;0;0;0]
+    let bb = createBoard (f listbb)
+    let nbb = createBoard (f listnbb)
+    printfn "Update last pit bean:  %A" (fst (updateLastPit bb Player1 bb.[5]) = nbb) 
 let distributeTest () =
     0
 
