@@ -48,12 +48,26 @@ let updateLastPitTest () =
     let listnbb = [0;0;0;0;1;2;0;2;1;0;0;0;0;0]
     let bb = createBoard (f listbb)
     let nbb = createBoard (f listnbb)
-    printfn "Update last pit bean:  %A" (fst (updateLastPit bb Player1 bb.[5]) = nbb) 
+    printfn "Update last pit bean:  %b" (fst (updateLastPit bb Player1 bb.[5]) = nbb) 
 let distributeTest () =
-    0
+    let f (l: int list) x = l.[x]
+    
+    let listba  = [0;0;0;4;0;1;0;2;1;0;0;0;0;0]
+    let listnba = [0;0;0;0;1;2;1;3;1;0;0;0;0;0]
+    let ba = createBoard (f listba)
+    let nba = createBoard (f listnba)
+    printfn "Distribute non-empty:  %b" (fst (distribute ba Player1 ba.[3]) = nba)
+    
+
+    let listbb  = [0;0;0;0;1;2;0;2;1;0;0;0;0;0]
+    let listnbb = [0;0;0;0;1;2;0;2;1;0;0;0;0;0]
+    let bb = createBoard (f listbb)
+    let nbb = createBoard (f listnbb)
+    printfn "Distribute empty:      %b" (fst (distribute bb Player1 bb.[1]) = nbb) 
 
 do isHomeTest ()
 do isGameOverTest ()
 do getHomeTest ()
 do replaceAtIndexTest ()
 do updateLastPitTest ()
+do distributeTest ()
