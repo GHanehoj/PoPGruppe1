@@ -22,9 +22,14 @@ let isHomeTest () =
     // 2c
     printfn "No Home:               %b" (isHome Player1 b.[3] = false)
 
-let isGameOverTest () =
-    printfn "Player 1 No Beans:     %b" (isGameOver (createBoard (fun x -> if x < 6 then 0 else 1)) = true)
-    printfn "Player 2 No Beans:     %b" (isGameOver (createBoard (fun x -> if x > 6 then 0 else 1)) = true)
+let isGameOverTest () = 
+    let ba =  createBoard (fun x -> if x < 6 then 0 else 1)
+    // 1a
+    printfn "Player 1 No Beans:     %b" (isGameOver ba = true)
+    let bb = createBoard (fun x -> if x > 6 then 0 else 1)
+    // 1b
+    printfn "Player 2 No Beans:     %b" (isGameOver bb = true)
+    // 1c
     printfn "Not game over:         %b" (isGameOver (createBoard id) = false)
 
 let replaceAtIndexTest () = 
