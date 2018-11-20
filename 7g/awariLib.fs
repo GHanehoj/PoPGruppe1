@@ -51,7 +51,7 @@ let getHome (b:board) (p:player):pit =
 let updateLastPit (b:board) (p:player) (i:pit) : (board*pit) = 
     if i.beanCount = 1 && i.index % 7 <> 6 then
         let home = getHome b p
-        let oppositePit = b.[12 - i.index]
+        let oppositePit = b.[12 - i.index] 
         let updatedBoard =
             b 
             |> (replaceAtIndex home.index {home with beanCount = home.beanCount + i.beanCount + oppositePit.beanCount })
@@ -65,11 +65,20 @@ let updateLastPit (b:board) (p:player) (i:pit) : (board*pit) =
 // Hovedfunktionen til at uddele bønnerne på et specifikt felt ud til alle de efterfølgende felter, 
 // samt fjerne de oprindelige bønder i startfeltet.
 let distribute (b:board) (p:player) (i:pit) : (board*pit) =
+    
+    // Hjælpefunktion til at bestemme hvordan bønnerne i et givent felt cp ændre sig efter
+    // bønnerne i "op" er blevet fordelt.
+    // op er den pit som alle bønnerne kommer fra.
     let addBean (op:pit) (cp:pit) : pit =
         let indexDiff = (cp.index - op.index - 1 + boardSize) % boardSize
         
-        // Skulle det valgte felt indeholde nok bønder til at komme hele vejen rundt.
-        let beanSum = (if cp <> op then cp.beanCount else 0) + op.beanCount / boardSize 
+        // Skulle det valgte felt indeholde nok bønder til at komme hele vejen rundt
+        // adderes dette tal til alle felter.
+        // Herudover sættes op til nu at have 0 bønner
+        let beanSum = (if cp <> op then cp.beanCount else 0) + op.beanCount / boardSize
+        
+        // Hvis der var nok bønner i op til at nå det nuværrende felt,
+        // forøges antallet af bønner her med 1.
         if indexDiff < op.beanCount then
             {cp with beanCount = beanSum + 1}
         else
