@@ -68,18 +68,19 @@ let distribute (b:board) (p:player) (i:pit) : (board*pit) =
     else
         let lastIndex = (i.index + i.beanCount) % boardSize 
         let ni = b.[lastIndex]
-        let nb = List.map (addBean i) b
+        let nb = List.map (addBean i) b 
         updateLastPit nb p ni
 
-
+ 
 
 let rec getMove (b:board) (p:player) (s:string) : pit = 
   printfn "%s" s
-  let inputPit = int (System.Console.ReadLine ())
-  if not (List.contains inputPit [1;2;3;4;5;6]) then
+  let inputString = System.Console.ReadLine () 
+  if not (List.contains inputString ["1";"2";"3";"4";"5";"6"]) then
     do printfn "Incorrect input, try again with one of the pits 1-6"
     getMove b p s  
   else
+    let inputPit = int (inputString)
     match p with
     | Player1 -> b.[inputPit-1]
     | Player2 -> b.[inputPit+6]
