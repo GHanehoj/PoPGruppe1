@@ -74,11 +74,12 @@ let distribute (b:board) (p:player) (i:pit) : (board*pit) =
             {cp with beanCount = beanSum + 1}
         else
             {cp with beanCount = beanSum}
+    
     if i.beanCount = 0 then (b,i)
     else
         let lastIndex = (i.index + i.beanCount) % boardSize 
-        let ni = b.[lastIndex]
         let nb = List.map (addBean i) b
+        let ni = nb.[lastIndex]
         updateLastPit nb p ni
 
 // Funktionen der får et input fra brugeren, samt validerer dette input
