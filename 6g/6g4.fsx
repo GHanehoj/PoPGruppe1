@@ -4,7 +4,7 @@ let rec cfrac2float (lst:int list) : float =
   match lst with
     | h::[] -> float h
     | h::t ->  float h +  (1.0 / cfrac2float t)
-    | _ -> 0.0
+    | _ -> failwith "Empty list"
 
 //6g1
 let rec float2cfrac (x:float) : int list =
