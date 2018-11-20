@@ -125,9 +125,8 @@ let rec getMove (gameType:int) (b:board) (p:player) (s:string) : pit =
       | Player1 -> b.[inputPit-1]
       | Player2 -> b.[inputPit+6]
   else
-    match p with
-    | Player1 -> getAiMove b p 0 0 0
-    | Player2 -> getAiMove b p 7 0 0
+    do printfn "Ai's move:"
+    getAiMove b p 7 0 0
 
 // Funktionen der holder styr på turen, dvs om den nuværrende spiller
 // skal have en tur til, eller om det er en ny spiller
@@ -136,7 +135,7 @@ let turn (gameType : int) (b : board) (p : player) : board =
     printBoard b
     let str =
       if n = 0 then
-        sprintf "%A's move? " p
+        sprintf "%A's move:" p
       else 
         "Again? "
     let i = getMove gameType b p str
