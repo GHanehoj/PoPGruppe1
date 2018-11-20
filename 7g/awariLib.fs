@@ -98,8 +98,8 @@ let distribute (b:board) (p:player) (i:pit) : (board*pit) =
     else
         let lastIndex = (i.index + i.beanCount) % boardSize 
         let nb = List.map (addBean i) b
-    let ni = nb.[lastIndex]
-    updateLastPit nb p ni
+        let ni = nb.[lastIndex]
+        updateLastPit nb p ni
 
  
 let rec getAiMove (b:board) (p:player) (cIndex:int) (cMax:int) (maxIndex:int)= 
