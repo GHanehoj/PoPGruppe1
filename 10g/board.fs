@@ -1,4 +1,4 @@
-//module Board
+module Board
 open System
 type Board<'a when 'a : equality >() =
     let mutable _lst : 'a list = []
