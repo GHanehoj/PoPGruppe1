@@ -1,7 +1,7 @@
 module Moose
 
-type Moose(pos:position, repTime:int, aFac:AnimalFactory) =
-    inherit Animal(pos,repTime, aFac)
+type Moose(pos:position, repTime:int) =
+    inherit Animal(pos,repTime)
 
     override prioritize (actSeq: action seq) =
         ()
