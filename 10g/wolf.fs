@@ -1,12 +1,20 @@
 module Wolf
 
-type Wolf(pos:position, repTime:int) =
+type Wolf(pos:position, repTime:int, feedTime:int) =
     inherit Animal(pos,repTime)
+
+    let _feedTime = feedTime
+
+    member this.feedTime
+        with get() = _feedTime
+        and set(newFeedTime) = _feedTime <- newFeedTime
 
     override prioritize (actSeq: action seq) =
         ()
 
 
+    override tick () =
+        ()
 
 // prioritizing:
 
