@@ -48,10 +48,14 @@ type Animal(pos:position, repTime:int, aFac:AnimalFactory, brd:Board) =
 
     abstract member prioritize : action seq -> action
 
+    // For mooses just decrease reproduction time by 1
+    // For wolves decrease both repTime and hunger by 1
+    abstract member tick : unit -> unit
     member this.takeTurn() =
         let availableActions = generateMoves(this.pos)
         let legalActions = filterInvalidActions(availableActions)
         let prioritizedActions = this.prioritize(legalActions)
         // Execute (prioritizedActions.nth 1)
+        this.tick()
         ()
 
