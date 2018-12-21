@@ -3,7 +3,7 @@ module Wolf
 type Wolf(pos:position, repTime:int, feedTime:int) =
     inherit Animal(pos,repTime)
 
-    let _feedTime = feedTime
+    let mutable _feedTime = feedTime
 
     member this.feedTime
         with get() = _feedTime
