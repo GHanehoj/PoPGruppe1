@@ -10,7 +10,7 @@ type action = Move of position
              |Eat of position
 
 [<AbstractClass>]
-type Animal(pos:position, repTime:int, aFac:AnimalFactory, brd:Board) =
+type Animal(pos:position, repTime:int, brd:Board) =
     let mutable _pos = pos
     let generateMoves ((x,y) : position) =
         let actionTypes = FSharpType.GetUnionCases typeof<action>
