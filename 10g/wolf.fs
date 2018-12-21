@@ -1,7 +1,7 @@
 module Wolf
 
-type Wolf(pos:position, repTime:int, aFac:AnimalFactory) =
-    inherit Animal(pos,repTime, aFac)
+type Wolf(pos:position, repTime:int) =
+    inherit Animal(pos,repTime)
 
     override prioritize (actSeq: action seq) =
         ()
