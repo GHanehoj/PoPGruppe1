@@ -3,4 +3,11 @@ module Moose
 type Moose(pos:position, repTime:int, aFac:AnimalFactory) =
     inherit Animal(pos,repTime, aFac)
 
-    override this.actionList = []
+    override prioritize (actSeq: action seq) =
+        ()
+
+// prioritizing:
+
+// 1: flygt fra ulv
+// 2: formering hvis muligt
+// 3: Flyt tilfældigt

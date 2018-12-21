@@ -2,6 +2,7 @@ module Animal
 open AnimalFactory
 open Board
 open Microsoft.FSharp.Reflection
+open System.Linq.Expressions
 type position = int*int
 
 type action = Move of position
@@ -32,9 +33,11 @@ type Animal(pos:position, repTime:int, aFac:AnimalFactory, brd:Board) =
                     match act with
                     |Move(x,y) -> yield Move(x,y)
                     |Reproduce(x,y) -> yield Reproduce(x,y)
-                if brd.findAtCoordinate(x,y) = Moose then
+                    | _ -> ()
+                if brd.findAtCoordinate(x,y) = Some Animal then
                     match act with
                     |Eat(x,y)  -> yield Eat(x,y)
+                    | _ -> ()
         }
 
 
@@ -43,7 +46,7 @@ type Animal(pos:position, repTime:int, aFac:AnimalFactory, brd:Board) =
         and set(newPos) = _pos <- newPos
 
 
-    abstract member prioritize : action seq -> action seq
+    abstract member prioritize : action seq -> action
 
     member this.takeTurn() =
         let availableActions = generateMoves(this.pos)
