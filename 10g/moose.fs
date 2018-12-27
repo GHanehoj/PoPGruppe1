@@ -15,7 +15,7 @@ type Moose(pos:position, repTime:int) =
                 for j = (-viewLength) to viewLength do 
                     match brd.findAtCoordinate(x+i, y+i) with
                     | :? Moose -> ()
-                    | _ -> yield (x+i, y+i) 
+                    | _ -> yield (x+i, y+j) 
         }
 
 
