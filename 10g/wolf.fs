@@ -3,6 +3,20 @@ module Wolf
 type Wolf(pos:position, repTime:int, feedTime:int) =
     inherit Animal(pos,repTime)
 
+    let viewLength = 2
+
+    // Returns sequence of position of moose that are within view of the 
+    // given position. 
+    // (Skal muligvis boxe brd.findAtCoordinate(x+i, y+i) for ikke at få error) 
+    let nearbyMoose ((x,y) : position) = 
+        seq {
+            for i = (-viewLength) to viewLength do 
+                for j = (-viewLength) to viewLength do 
+                    match brd.findAtCoordinate(x+i, y+i) with
+                    | :? Wolf -> ()
+                    | _ -> yield (x+i, y+i) 
+        }
+
     let mutable _feedTime = feedTime
 
     member this.feedTime
