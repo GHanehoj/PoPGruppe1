@@ -4,7 +4,7 @@ type Board<'a when 'a : equality >() =
     let mutable _lst : 'a list = []
     member this.deleteThis (element:'a) = 
         _lst <- List.filter (fun x -> x <> element) _lst
-    member this.getMembers () =
+    member this.getContent :'a list =  
         let rnd = Random()
         // As there is no good shuffle of list in the standarb library
         // This function simply sorts with a random key for each element
