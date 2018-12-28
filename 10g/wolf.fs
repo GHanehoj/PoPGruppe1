@@ -12,9 +12,11 @@ type Wolf(pos:position, repTime:int, feedTime:int) =
         seq {
             for i = (-viewLength) to viewLength do 
                 for j = (-viewLength) to viewLength do 
-                    match brd.findAtCoordinate(x+i, y+j) with
-                    | :? Wolf -> ()
-                    | _ -> yield (x+i, y+j) 
+                    match brd.existsAt(x+i, y+j) with
+                    | Some(x) -> match x with
+                                 | :? Wolf -> ()
+                                 | _ -> yield (x+i, y+j) 
+                    | _ -> ()
         }
 
     let mutable _feedTime = feedTime

@@ -13,9 +13,11 @@ type Moose(pos:position, repTime:int) =
         seq {
             for i = (-viewLength) to viewLength do 
                 for j = (-viewLength) to viewLength do 
-                    match brd.findAtCoordinate(x+i, y+j) with
-                    | :? Moose -> ()
-                    | _ -> yield (x+i, y+j) 
+                    match brd.existsAt(x+i, y+j) with
+                    | Some(x) -> match x with
+                                 | :? Moose -> ()
+                                 | _ -> yield (x+i, y+j) 
+                    | _ -> ()
         }
 
 
