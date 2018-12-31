@@ -1,7 +1,9 @@
 module Wolf
+open Board
+open Animal
 
-type Wolf(pos:position, repTime:int, feedTime:int) =
-    inherit Animal(pos,repTime)
+type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
+    inherit Animal(pos,repTime,brd)
 
     let viewLength = 2
 
@@ -12,8 +14,8 @@ type Wolf(pos:position, repTime:int, feedTime:int) =
         seq {
             for i = (-viewLength) to viewLength do 
                 for j = (-viewLength) to viewLength do 
-                    match brd.existsAt(x+i, y+j) with
-                    | Some(x) -> match x with
+                    match this.animalAt (x+i)  (y+j) with
+                    | Some(a) -> match a with
                                  | :? Wolf -> ()
                                  | _ -> yield (x+i, y+j) 
                     | _ -> ()
@@ -25,12 +27,14 @@ type Wolf(pos:position, repTime:int, feedTime:int) =
         with get() = _feedTime
         and set(newFeedTime) = _feedTime <- newFeedTime
 
-    override prioritize (actSeq: action seq) =
-        ()
+    override this.prioritize (actSeq: action seq) =
+        Move(0,0)
 
 
-    override tick () =
-        ()
+    override this.tick () =
+        this.repTime <- this.repTime - 1
+        this.feedTime <- this.feedTime - 1
+        if this.feedTime <= 0 then this.die()
 
 // prioritizing:
 

@@ -2,7 +2,7 @@ module Board
 open System
 type Board<'a when 'a : equality >() =
     let mutable _lst : 'a list = []
-    member this.deleteThis (element:'a) = 
+    member this.delete (element:'a) = 
         _lst <- List.filter (fun x -> x <> element) _lst
     member this.getContent :'a list =  
         let rnd = Random()

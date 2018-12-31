@@ -1,7 +1,8 @@
 module Moose
-
-type Moose(pos:position, repTime:int) =
-    inherit Animal(pos,repTime)
+open Animal
+open Board
+type Moose(pos:position, repTime:int,brd:Board<Animal>) as this =
+    inherit Animal(pos,repTime,brd)
 
     let viewLength = 3
     
@@ -13,8 +14,8 @@ type Moose(pos:position, repTime:int) =
         seq {
             for i = (-viewLength) to viewLength do 
                 for j = (-viewLength) to viewLength do 
-                    match brd.existsAt(x+i, y+j) with
-                    | Some(x) -> match x with
+                    match this.animalAt (x+i)  (y+j) with
+                    | Some(a) -> match a with
                                  | :? Moose -> ()
                                  | _ -> yield (x+i, y+j) 
                     | _ -> ()
@@ -22,9 +23,10 @@ type Moose(pos:position, repTime:int) =
 
 
 
-    override prioritize (actSeq: action seq) =
-        ()
-
+    override this.prioritize (actSeq: action seq) =
+        Move(0,0)
+    override this.tick () =
+        this.repTime <- this.repTime - 1
 // prioritizing:
 
 // 1: flygt fra ulv

@@ -8,9 +8,9 @@ type action = Move of position
              |Reproduce of position
              |Eat of position
 
+
 [<AbstractClass>]
-type Animal(pos:position, repTime:int, brd:Board<Animal>) =
-    let mutable _pos = pos
+type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
     let generateMoves ((x,y) : position) =
         let actionTypes = FSharpType.GetUnionCases typeof<action>
         seq {
@@ -23,8 +23,9 @@ type Animal(pos:position, repTime:int, brd:Board<Animal>) =
                               |"Move" -> Move(x+i, y+j)
                               |"Reproduce" -> Reproduce(x+i, y+j)
                               |_ -> Eat(x+i, y+j)
-        }  
-    let existsAt x y : Animal option=
+        }
+
+    let _animalAt x y : Animal option=
         let lst = brd.getContent
         match List.filter (fun (a:Animal) -> a.pos = (x,y)) lst with
         | a::t  -> Some a
@@ -34,16 +35,15 @@ type Animal(pos:position, repTime:int, brd:Board<Animal>) =
         seq {
             for act in actSeq do
                 match act with
-                | Move(x,y) when existsAt x y = None -> yield Move(x,y)
-                | Reproduce(x,y) when existsAt x y = None -> yield Reproduce(x,y)
-                | Eat(x,y) when existsAt x y <> None -> yield Eat(x,y)
+                | Move(x,y) when _animalAt x y = None -> yield Move(x,y)
+                | Reproduce(x,y) when _animalAt x y = None -> yield Reproduce(x,y)
+                | Eat(x,y) when _animalAt x y <> None -> yield Eat(x,y)
                 | _ -> () 
         }
-
-    
-    member this.pos 
-        with get() : position = _pos
-        and set(newPos : position) = _pos <- newPos
+    member this.animalAt = _animalAt
+    member val repTime = repTimeDefault with get,set
+    member this.resetRepTime () = this.repTime <- repTimeDefault 
+    member val pos = startPos with get,set  
     override this.Equals(other) =
         match other with 
         | :? Animal as a-> this.pos = a.pos
@@ -62,6 +62,8 @@ type Animal(pos:position, repTime:int, brd:Board<Animal>) =
         let prioritizedActions = this.prioritize(legalActions)
         // Execute (prioritizedActions.nth 1)
         this.tick()
-        ()
+    
+    member this.die () =
+        brd.delete(this)    
     
     
