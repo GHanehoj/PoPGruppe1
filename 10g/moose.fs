@@ -1,8 +1,8 @@
 module Moose
 open Animal
 open Board
-type Moose(pos:position, repTime:int,brd:Board<Animal>) as this =
-    inherit Animal(pos,repTime,brd)
+type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
+    inherit Animal(startPos,repTimeDefault,brd)
 
     let viewLength = 3
     
@@ -14,7 +14,7 @@ type Moose(pos:position, repTime:int,brd:Board<Animal>) as this =
         seq {
             for i = (-viewLength) to viewLength do 
                 for j = (-viewLength) to viewLength do 
-                    match this.animalAt (x+i)  (y+j) with
+                    match this.animalAt((x+i),(y+j)) with
                     | Some(a) -> match a with
                                  | :? Moose -> ()
                                  | _ -> yield (x+i, y+j) 
@@ -51,7 +51,7 @@ type Moose(pos:position, repTime:int,brd:Board<Animal>) as this =
         match act with
         | Move(p) -> this.pos <- p
         | Reproduce(p) -> 
-            brd.insert(Moose(p,repTime,brd))
+            brd.insert(Moose(p,repTimeDefault,brd))
             this.resetRepTime()
         | Eat(p) -> failwith "Moose tried to eat something"
     override this.represent = "M"
