@@ -7,10 +7,12 @@ type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
 
     let viewLength = 2
 
+    let mutable _feedTime = feedTime
+
     // Returns sequence of position of moose that are within view of the 
     // given position. 
     // (Skal muligvis boxe brd.findAtCoordinate(x+i, y+i) for ikke at få error) 
-    let nearbyMoose ((x,y) : position) = 
+    member this.nearbyMoose ((x,y) : position) = 
         seq {
             for i = (-viewLength) to viewLength do 
                 for j = (-viewLength) to viewLength do 
@@ -21,36 +23,35 @@ type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
                     | _ -> ()
         }
 
-    let mutable _feedTime = feedTime
 
     // Finds the nearest moose to the action Move(x,y) from all nearbyMoose to that position.
     // Returns a tuple consisting of the number of moves to the nearest
     // moose, and the position given as an argument. 
-    let nearestMoose (Move(x,y) : action) = 
-        let moose = nearbyMoose (x,y)
-        let distList = Seq.map (fun elem -> (distanceTo (Move(x,y)) elem, (x,y))) moose 
+    member this.nearestMoose (Move(x,y) : action) = 
+        let moose = this.nearbyMoose (x,y)
+        let distList = Seq.map (fun elem -> (this.distanceTo (Move(x,y)) elem, (x,y))) moose 
         let sortedList = Seq.sortBy (fun elem -> fst elem) distList
         Seq.head sortedList
 
     // Selects the Move action that puts the animal most near a moose
-    let huntMoose (actSeq : action seq) : action = 
-        let moves = actSeqOf "Move" actSeq 
-        let distList = Seq.map (fun elem -> nearestMoose elem) moves
+    member this.huntMoose (actSeq : action seq) : action = 
+        let moves = this.actSeqOf "Move" actSeq 
+        let distList = Seq.map (fun elem -> this.nearestMoose elem) moves
         let sortedList = Seq.sortBy (fun elem -> fst elem) distList
         Move(snd (Seq.head sortedList))
         
     // Selects action
     override this.prioritize (actSeq : action seq) = 
-        if (this.feedTime < 5) && not (Seq.isEmpty (actSeqOf "Eat" actSeq)) then 
-            chooseRandom (actSeqOf "Eat" actSeq)  
-        elif (this.feedTime < 5) && not (Seq.isEmpty nearbyMoose) then
-            huntMoose (actSeqOf "Move" actSeq)
+        if (this.feedTime < 5) && not (Seq.isEmpty (this.actSeqOf "Eat" actSeq)) then 
+            this.chooseRandom (this.actSeqOf "Eat" actSeq)  
+        elif (this.feedTime < 5) && not (Seq.isEmpty (this.nearbyMoose this.pos)) then
+            this.huntMoose (this.actSeqOf "Move" actSeq)
         elif this.repTime = 0 then 
-            chooseRandom (actSeqOf "Reproduce" actSeq)
-        elif not (Seq.isEmpty nearbyMoose) then
-            huntMoose (actSeqOf "Move" actSeq)
+            this.chooseRandom (this.actSeqOf "Reproduce" actSeq)
+        elif not (Seq.isEmpty (this.nearbyMoose this.pos)) then
+            this.huntMoose (this.actSeqOf "Move" actSeq)
         else 
-            chooseRandom (actSeqOf "Move" actSeq)
+            this.chooseRandom (this.actSeqOf "Move" actSeq)
 
 
     override this.represent = "W"
