@@ -51,8 +51,10 @@ type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
             this.chooseRandom (this.actSeqOf "Reproduce" actSeq)
         elif not (Seq.isEmpty (this.nearbyMoose this.pos)) then
             this.huntMoose (this.actSeqOf "Move" actSeq)
-        else 
+        elif not (Seq.isEmpty (this.actSeqOf "Move" actSeq)) then 
             this.chooseRandom (this.actSeqOf "Move" actSeq)
+        else
+            Move(this.pos)
 
 
     override this.represent = "W"
