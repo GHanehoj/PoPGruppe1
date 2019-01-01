@@ -65,7 +65,8 @@ type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
     member this.animalAt = _animalAt
     member val repTime = repTimeDefault with get,set
     member this.resetRepTime () = this.repTime <- repTimeDefault 
-    member val pos = startPos with get,set  
+    member val pos = startPos with get,set
+    member val alive = true with get,set
     override this.Equals(other) =
         match other with 
         | :? Animal as a-> this.pos = a.pos
@@ -78,14 +79,17 @@ type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
     // For mooses just decrease reproduction time by 1
     // For wolves decrease both repTime and hunger by 1
     abstract member tick : unit -> unit
+    abstract member execute : action -> unit
     member this.takeTurn() =
-        let availableActions = generateMoves(this.pos)
-        let legalActions = filterInvalidActions(availableActions)
-        let prioritizedActions = this.prioritize(legalActions)
-        // Execute (prioritizedActions.nth 1)
-        this.tick()
-    
+        if this.alive then 
+            let availableActions = generateMoves(this.pos)
+            let legalActions = filterInvalidActions(availableActions)
+            let prioritizedAction = this.prioritize(legalActions)
+            this.execute(prioritizedAction)
+            this.tick()
+
     member this.die () =
-        brd.delete(this)    
+        brd.delete(this)
+        this.alive = false
     
     

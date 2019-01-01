@@ -50,7 +50,7 @@ type Environment(boardSize : int, wolfRepTime:int, wolfFeedTime:int, startWolfCo
         selcords createWolf (selcords createMoose cords startMooseCount) startWolfCount |> ignore 
         
         let rec loop i =
-            //List.iter (fun (a:Animal) -> a.takeTurn()) this.brd.getContent 
+            List.iter (fun (a:Animal) -> a.takeTurn()) this.brd.getContent 
             List.iter (fun (a:Animal) -> a.tick()) this.brd.getContent
             loop (i-1)
             this.print()

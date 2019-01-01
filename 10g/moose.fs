@@ -21,7 +21,13 @@ type Moose(pos:position, repTime:int,brd:Board<Animal>) as this =
                     | _ -> ()
         }
 
-
+    override this.execute act = 
+        match act with
+        | Move(p) -> this.pos <- p
+        | Reproduce(p) -> 
+            brd.insert(Moose(p,repTime,brd))
+            this.resetRepTime()
+        | Eat(p) -> failwith "Moose tried to eat something"
     override this.represent = "M"
     override this.prioritize (actSeq: action seq) =
         Move(0,0)
