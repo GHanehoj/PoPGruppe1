@@ -23,6 +23,7 @@ type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
 
     let mutable _feedTime = feedTime
 
+    override this.represent = "W"
     member this.feedTime
         with get() = _feedTime
         and set(newFeedTime) = _feedTime <- newFeedTime
@@ -35,7 +36,6 @@ type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
         this.repTime <- this.repTime - 1
         this.feedTime <- this.feedTime - 1
         if this.feedTime <= 0 then this.die()
-
 // prioritizing:
 
 // 1: Hvis sult < XXXX -> Så jagt elge

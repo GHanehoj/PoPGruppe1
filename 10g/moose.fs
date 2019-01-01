@@ -22,7 +22,7 @@ type Moose(pos:position, repTime:int,brd:Board<Animal>) as this =
         }
 
 
-
+    override this.represent = "M"
     override this.prioritize (actSeq: action seq) =
         Move(0,0)
     override this.tick () =

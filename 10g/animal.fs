@@ -52,7 +52,7 @@ type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
         hash this.pos
 
     abstract member prioritize : action seq -> action
-
+    abstract member represent : string 
     // For mooses just decrease reproduction time by 1
     // For wolves decrease both repTime and hunger by 1
     abstract member tick : unit -> unit
