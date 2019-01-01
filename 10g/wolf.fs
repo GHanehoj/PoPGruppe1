@@ -41,11 +41,11 @@ type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
         
     // Selects action
     override this.prioritize (actSeq : action seq) = 
-        if feedTime < 5 && not (Seq.isEmpty (actSeqOf "Eat" actSeq)) then 
+        if (this.feedTime < 5) && not (Seq.isEmpty (actSeqOf "Eat" actSeq)) then 
             chooseRandom (actSeqOf "Eat" actSeq)  
-        elif feedTime < 5 && not (Seq.isEmpty nearbyMoose) then
+        elif (this.feedTime < 5) && not (Seq.isEmpty nearbyMoose) then
             huntMoose (actSeqOf "Move" actSeq)
-        elif repTime = 0 then 
+        elif this.repTime = 0 then 
             chooseRandom (actSeqOf "Reproduce" actSeq)
         elif not (Seq.isEmpty nearbyMoose) then
             huntMoose (actSeqOf "Move" actSeq)
