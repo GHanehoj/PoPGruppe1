@@ -23,13 +23,40 @@ type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
 
     let mutable _feedTime = feedTime
 
+    // Finds the nearest moose to the action Move(x,y) from all nearbyMoose to that position.
+    // Returns a tuple consisting of the number of moves to the nearest
+    // moose, and the position given as an argument. 
+    let nearestMoose (Move(x,y) : action) = 
+        let moose = nearbyMoose (x,y)
+        let distList = Seq.map (fun elem -> (distanceTo (Move(x,y)) elem, (x,y))) moose 
+        let sortedList = Seq.sortBy (fun elem -> fst elem) distList
+        Seq.head sortedList
+
+    // Selects the Move action that puts the animal most near a moose
+    let huntMoose (actSeq : action seq) : action = 
+        let moves = actSeqOf "Move" actSeq 
+        let distList = Seq.map (fun elem -> nearestMoose elem) moves
+        let sortedList = Seq.sortBy (fun elem -> fst elem) distList
+        Move(snd (Seq.head sortedList))
+        
+    // Selects action
+    override this.prioritize (actSeq : action seq) = 
+        if feedTime < 5 && not (Seq.isEmpty (actSeqOf "Eat" actSeq)) then 
+            chooseRandom (actSeqOf "Eat" actSeq)  
+        elif feedTime < 5 && not (Seq.isEmpty nearbyMoose) then
+            huntMoose (actSeqOf "Move" actSeq)
+        elif repTime = 0 then 
+            chooseRandom (actSeqOf "Reproduce" actSeq)
+        elif not (Seq.isEmpty nearbyMoose) then
+            huntMoose (actSeqOf "Move" actSeq)
+        else 
+            chooseRandom (actSeqOf "Move" actSeq)
+
+
     override this.represent = "W"
     member this.feedTime
         with get() = _feedTime
         and set(newFeedTime) = _feedTime <- newFeedTime
-
-    override this.prioritize (actSeq: action seq) =
-        Move(0,0)
 
 
     override this.tick () =
@@ -42,6 +69,3 @@ type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
 // 2: formering hvis muligt
 // 3: Jagt elge
 // 4: flyt tilfældigt
-
-
-// Læg tilfældig 0<x<1 til alle prioriteringerne for at få tilfældig

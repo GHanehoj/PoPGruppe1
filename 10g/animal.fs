@@ -40,6 +40,28 @@ type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
                 | Eat(x,y) when _animalAt x y <> None -> yield Eat(x,y)
                 | _ -> () 
         }
+
+
+    // Finds the number of moves required to go from position
+    // Move(x1,y1) to (x2,y2)
+    let distanceTo (Move(x1,y1) : action) ((x2,y2) : position) = 
+        let d1,d2 = (abs (x2-x1) , abs (y2-y1)) 
+        if d1 > d2 then d1 else d2 
+
+    // Returns a list consisting of the action specified with actionName
+    let actSeqOf (actionName : string) (actSeq : action seq) =
+        Seq.choose (fun elem -> 
+            match elem.GetType().Name with 
+            | x when x = actionName -> Some (elem)
+            | _ -> None) actSeq 
+
+    // Chooses a random action from the sequence
+    let chooseRandom (actSeq : action seq) =
+        let rnd = System.Random()
+        Seq.item (rnd.Next(Seq.length actSeq)) actSeq 
+
+
+
     member this.animalAt = _animalAt
     member val repTime = repTimeDefault with get,set
     member this.resetRepTime () = this.repTime <- repTimeDefault 
