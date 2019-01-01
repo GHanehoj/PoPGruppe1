@@ -4,7 +4,7 @@ open Wolf
 open Moose
 open Board
 open System
-type Environment(boardSize : int, wolfRepTime:int, wolfFeedTime:int, startWolfCount:int, mooseRepTime:int, startMooseCount:int, filename:string, time:int) =
+type Environment(time : int, filename:string, boardSize : int, startMooseCount:int, mooseRepTime:int, startWolfCount:int, wolfRepTime:int, wolfFeedTime:int) =
     member val brd = Board<Animal>() with get,set  
     member this.print() = 
         let cords : Animal option[,] = Array2D.init boardSize boardSize (fun _ _ -> None)
@@ -32,7 +32,7 @@ type Environment(boardSize : int, wolfRepTime:int, wolfFeedTime:int, startWolfCo
             match lst with
             | h::t when rnd.NextDouble() <= 1.0 / float length -> (h,t)
             | h::t -> 
-                let (sel,tl) = rndSelect lst (length - 1)
+                let (sel,tl) = rndSelect t (length - 1)
                 (sel,h::tl)
             | [] -> failwith "Too many animals compared to tiles"
                     
@@ -50,8 +50,10 @@ type Environment(boardSize : int, wolfRepTime:int, wolfFeedTime:int, startWolfCo
         selcords createWolf (selcords createMoose cords startMooseCount) startWolfCount |> ignore 
         
         let rec loop i =
-            List.iter (fun (a:Animal) -> a.takeTurn()) this.brd.getContent 
-            List.iter (fun (a:Animal) -> a.tick()) this.brd.getContent
-            loop (i-1)
-            this.print()
+            if i > 0 then 
+                this.print()
+                List.iter (fun (a:Animal) -> a.takeTurn()) this.brd.getContent 
+                List.iter (fun (a:Animal) -> a.tick()) this.brd.getContent
+                loop (i-1)
+            else this.print()
         do loop time

@@ -36,11 +36,15 @@ type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
         let moves = this.actSeqOf "Move" actSeq  
         let distList = Seq.map (fun elem -> this.nearestWolf (this.getCords elem)) moves
         let sortedList = Seq.sortBy (fun elem -> fst elem) distList
-        Move(snd (Seq.last sortedList))
+        printfn "Hej: %A" (Seq.length moves)
+        printfn "Hej: %A" (Seq.length distList)
+        printfn "Hej: %A" (Seq.length sortedList)
+        Move(snd (Seq.head sortedList))
         
     // Selects action
-    override this.prioritize (actSeq : action seq) = 
-        if not (Seq.isEmpty (this.nearbyWolves this.pos)) then
+    override this.prioritize (actSeq : action seq) =
+        printfn "%A" (this.nearbyWolves this.pos) 
+        if not (Seq.isEmpty (this.nearbyWolves this.pos) || Seq.isEmpty (this.actSeqOf "Move" actSeq)) then
             this.flee actSeq
         elif this.repTime = 0 then 
             this.chooseRandom (this.actSeqOf "Reproduce" actSeq)

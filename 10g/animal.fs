@@ -35,10 +35,11 @@ type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
     member this.filterInvalidActions (actSeq: action seq) =
         seq {
             for act in actSeq do
+                let a = this.animalAt(this.getCords act)
                 match act with
-                | Move(x,y) when this.animalAt(x,y) = None -> yield Move(x,y)
-                | Reproduce(x,y) when this.animalAt(x,y) = None -> yield Reproduce(x,y)
-                | Eat(x,y) when this.animalAt(x,y) <> None -> yield Eat(x,y)
+                | Move(x,y) when a = None || a = Some this -> yield Move(x,y)
+                | Reproduce(x,y) when a = None -> yield Reproduce(x,y)
+                | Eat(x,y) when a <> None -> yield Eat(x,y)
                 | _ -> () 
         }
 
