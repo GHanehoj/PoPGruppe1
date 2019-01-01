@@ -48,8 +48,10 @@ type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
             this.flee actSeq
         elif this.repTime = 0 then 
             this.chooseRandom (this.actSeqOf "Reproduce" actSeq)
-        else
+        elif not (Seq.isEmpty (this.actSeqOf "Move" actSeq)) then
             this.chooseRandom (this.actSeqOf "Move" actSeq)
+        else 
+            Move(this.pos)
 
     override this.execute act = 
         match act with
