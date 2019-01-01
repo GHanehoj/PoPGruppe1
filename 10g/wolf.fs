@@ -40,6 +40,7 @@ type Wolf(startPos:position, repTimeDefault:int, feedTimeDefault:int, brd:Board<
         let sortedList = Seq.sortBy (fun elem -> fst elem) distList
         Move(snd (Seq.head sortedList))
     override this.execute act =
+        printfn "%s%A did %A" this.represent this.pos act
         match act with 
         | Move(p) -> this.pos <- p
         | Reproduce(p) ->
@@ -50,21 +51,33 @@ type Wolf(startPos:position, repTimeDefault:int, feedTimeDefault:int, brd:Board<
             match this.animalAt(x,y) with
             | Some(a) -> a.die()
             | None -> failwith "Trying to eat a None"
-
+    member this.noWolves actSeq =
+        Seq.filter
     // Selects action
     override this.prioritize (actSeq : action seq) = 
-        if (this.feedTime < feedTimeDefault / 2) && not (Seq.isEmpty (this.actSeqOf "Eat" actSeq)) then 
-            this.chooseRandom (this.actSeqOf "Eat" actSeq)  
+        let isNotWolf (act : action) =
+            let p = this.getCords act
+            match this.animalAt(p) with 
+            | Some(a) -> match a with 
+                            | :? Wolf -> false 
+                            | _ -> true
+            | None -> false
+        let eatSeq = Seq.filter isNotWolf (this.actSeqOf "Eat" actSeq)
+        let moveSeq = this.actSeqOf "Move" actSeq
+        let reproduceSeq = this.actSeqOf "Reproduce" actSeq
+        
+        if (this.feedTime < feedTimeDefault / 2) && not (Seq.isEmpty eatSeq) then 
+            this.chooseRandom eatSeq  
         elif (this.feedTime < feedTimeDefault / 2) && not (Seq.isEmpty (this.nearbyMoose())) then
-            this.huntMoose (this.actSeqOf "Move" actSeq)
-        elif this.repTime = 0 then 
-            this.chooseRandom (this.actSeqOf "Reproduce" actSeq)
+            this.huntMoose moveSeq
+        elif this.repTime <= 0 && not (Seq.isEmpty reproduceSeq) then 
+            this.chooseRandom reproduceSeq
+        elif not (Seq.isEmpty eatSeq) then 
+            this.chooseRandom eatSeq
         elif not (Seq.isEmpty (this.nearbyMoose())) then
-            this.huntMoose (this.actSeqOf "Move" actSeq)
-        elif not (Seq.isEmpty (this.actSeqOf "Move" actSeq)) then 
-            this.chooseRandom (this.actSeqOf "Move" actSeq)
+            this.huntMoose moveSeq
         else
-            Move(this.pos)
+            this.chooseRandom moveSeq
 
 
     override this.represent = "W"

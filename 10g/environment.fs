@@ -16,23 +16,23 @@ type Environment(time : int, filename:string, boardSize : int, startMooseCount:i
         do List.iter insert this.brd.getContent
         let printAnimal (op : Animal option) = 
             match op with
-            | Some a -> printf "%3s" a.represent 
-            | None -> printf "%3s" "."
+            | Some a -> printf "%s" a.represent 
+            | None -> printf "%s" "."
         let iter x y op =
+            printAnimal op
             if y = boardSize - 1 then 
                 if x = boardSize - 1 then printfn ""
                 printfn ""
 
-            printAnimal op
         
         Array2D.iteri iter cords
            
         
     member this.startSimulation() =
         this.brd <- Board<Animal>(boardSize)
-        //0. Create board & animals
         let cords = [for x in 0..boardSize-1 do for y in 0..boardSize-1 -> (x,y)]
         let rnd = System.Random()
+        
         let rec rndSelect lst length =
             match lst with
             | h::t when rnd.NextDouble() <= 1.0 / float length -> (h,t)

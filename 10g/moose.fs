@@ -4,7 +4,7 @@ open Board
 type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
     inherit Animal(startPos,repTimeDefault,brd)
 
-    let viewLength = 3
+    let viewLength = 1
     
     // Returns sequence of position of wolves that are within view of the 
     // given position. 
@@ -37,25 +37,21 @@ type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
         let moves = this.actSeqOf "Move" actSeq  
         let distList = Seq.map (fun elem -> this.nearestWolf (this.getCords elem)) moves
         let sortedList = Seq.sortBy (fun elem -> fst elem) distList
-        //printfn "Hej: %A" (Seq.length moves)
-        //printfn "Hej: %A" (Seq.length distList)
-        //printfn "Hej: %A" (Seq.length sortedList)
-        //printfn "Farvel"
         Move(snd (Seq.head sortedList))
         
     // Selects action
     override this.prioritize (actSeq : action seq) =
-        //printfn "%A" (this.nearbyWolves()) 
-        if not (Seq.isEmpty (this.nearbyWolves())) && not (Seq.isEmpty (this.actSeqOf "Move" actSeq)) then
+        let moveSeq = this.actSeqOf "Move" actSeq
+        let reproduceSeq = this.actSeqOf "Reproduce" actSeq
+        if not (Seq.isEmpty (this.nearbyWolves())) && not (Seq.isEmpty moveSeq) then
             this.flee actSeq
-        elif this.repTime = 0 then 
-            this.chooseRandom (this.actSeqOf "Reproduce" actSeq)
-        elif not (Seq.isEmpty (this.actSeqOf "Move" actSeq)) then
-            this.chooseRandom (this.actSeqOf "Move" actSeq)
-        else 
-            Move(this.pos)
+        elif this.repTime <= 0 && not (Seq.isEmpty reproduceSeq) then 
+            this.chooseRandom reproduceSeq
+        else
+            this.chooseRandom moveSeq
 
-    override this.execute act = 
+    override this.execute act =
+        //printfn "%s%A did %A" this.represent this.pos act 
         match act with
         | Move(p) -> this.pos <- p
         | Reproduce(p) -> 

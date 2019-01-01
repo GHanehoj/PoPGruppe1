@@ -85,9 +85,10 @@ type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
     abstract member tick : unit -> unit
     abstract member execute : action -> unit
     member this.takeTurn() =
-        if this.alive then 
+        if this.alive then
             let availableActions = this.generateMoves()
             let legalActions = this.filterInvalidActions(availableActions)
+            //printfn "\n%s%A %A" this.represent this.pos legalActions
             let prioritizedAction = this.prioritize(legalActions)
             this.execute(prioritizedAction)
             this.tick()
