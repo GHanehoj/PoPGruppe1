@@ -10,7 +10,8 @@ type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
     // given position. 
     // (Skal muligvis boxe brd.findAtCoordinate(x+i, y+i) for ikke at få error) 
     // Kan denne elegant gøres til en abstrakt klasse? 
-    member this.nearbyWolves ((x,y) : position) = 
+    member this.nearbyWolves () =
+        let (x,y) = this.pos 
         seq {
             for i = (-viewLength) to viewLength do 
                 for j = (-viewLength) to viewLength do 
@@ -26,7 +27,7 @@ type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
     // Returns a tuple consisting of the number of moves to the nearest
     // wolf, and the position given as an argument. 
     member this.nearestWolf ((x,y) : position) = 
-        let wolves = this.nearbyWolves (x,y)
+        let wolves = this.nearbyWolves()
         let distList = Seq.map (fun elem -> (this.distanceTo (x,y) elem, (x,y))) wolves 
         let sortedList = Seq.sortBy (fun elem -> fst elem) distList
         Seq.head sortedList
@@ -36,15 +37,16 @@ type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
         let moves = this.actSeqOf "Move" actSeq  
         let distList = Seq.map (fun elem -> this.nearestWolf (this.getCords elem)) moves
         let sortedList = Seq.sortBy (fun elem -> fst elem) distList
-        printfn "Hej: %A" (Seq.length moves)
-        printfn "Hej: %A" (Seq.length distList)
-        printfn "Hej: %A" (Seq.length sortedList)
+        //printfn "Hej: %A" (Seq.length moves)
+        //printfn "Hej: %A" (Seq.length distList)
+        //printfn "Hej: %A" (Seq.length sortedList)
+        //printfn "Farvel"
         Move(snd (Seq.head sortedList))
         
     // Selects action
     override this.prioritize (actSeq : action seq) =
-        printfn "%A" (this.nearbyWolves this.pos) 
-        if not (Seq.isEmpty (this.nearbyWolves this.pos) || Seq.isEmpty (this.actSeqOf "Move" actSeq)) then
+        //printfn "%A" (this.nearbyWolves()) 
+        if not (Seq.isEmpty (this.nearbyWolves())) && not (Seq.isEmpty (this.actSeqOf "Move" actSeq)) then
             this.flee actSeq
         elif this.repTime = 0 then 
             this.chooseRandom (this.actSeqOf "Reproduce" actSeq)

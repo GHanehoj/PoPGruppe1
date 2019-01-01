@@ -5,28 +5,33 @@ open Moose
 open Board
 open System
 type Environment(time : int, filename:string, boardSize : int, startMooseCount:int, mooseRepTime:int, startWolfCount:int, wolfRepTime:int, wolfFeedTime:int) =
-    member val brd = Board<Animal>() with get,set  
+    member val brd = Board<Animal>(boardSize) with get,set  
     member this.print() = 
         let cords : Animal option[,] = Array2D.init boardSize boardSize (fun _ _ -> None)
-        let content = this.brd.getContent
         
         let insert (a : Animal) = 
                 let (x,y) = a.pos
                 cords.[x,y] <- Some a
+        
+        do List.iter insert this.brd.getContent
         let printAnimal (op : Animal option) = 
             match op with
             | Some a -> printf "%3s" a.represent 
             | None -> printf "%3s" "."
         let iter x y op =
-            if x = boardSize - 1 then printf "\n"
+            if y = boardSize - 1 then 
+                if x = boardSize - 1 then printfn ""
+                printfn ""
+
             printAnimal op
+        
         Array2D.iteri iter cords
            
         
     member this.startSimulation() =
-        this.brd <- Board<Animal>()
+        this.brd <- Board<Animal>(boardSize)
         //0. Create board & animals
-        let cords = [for x in 1..boardSize do for y in 1..boardSize -> (x,y)]
+        let cords = [for x in 0..boardSize-1 do for y in 0..boardSize-1 -> (x,y)]
         let rnd = System.Random()
         let rec rndSelect lst length =
             match lst with
@@ -53,7 +58,6 @@ type Environment(time : int, filename:string, boardSize : int, startMooseCount:i
             if i > 0 then 
                 this.print()
                 List.iter (fun (a:Animal) -> a.takeTurn()) this.brd.getContent 
-                List.iter (fun (a:Animal) -> a.tick()) this.brd.getContent
                 loop (i-1)
             else this.print()
         do loop time

@@ -10,7 +10,8 @@ type Wolf(startPos:position, repTimeDefault:int, feedTimeDefault:int, brd:Board<
     // Returns sequence of position of moose that are within view of the 
     // given position. 
     // (Skal muligvis boxe brd.findAtCoordinate(x+i, y+i) for ikke at få error) 
-    member this.nearbyMoose ((x,y) : position) = 
+    member this.nearbyMoose () = 
+        let (x,y) = this.pos
         seq {
             for i = (-viewLength) to viewLength do 
                 for j = (-viewLength) to viewLength do 
@@ -26,7 +27,7 @@ type Wolf(startPos:position, repTimeDefault:int, feedTimeDefault:int, brd:Board<
     // Returns a tuple consisting of the number of moves to the nearest
     // moose, and the position given as an argument. 
     member this.nearestMoose ((x,y) : position) = 
-        let moose = this.nearbyMoose (x,y)
+        let moose = this.nearbyMoose ()
         let distList = Seq.map (fun elem -> (this.distanceTo (x,y) elem, (x,y))) moose 
         let sortedList = Seq.sortBy (fun elem -> fst elem) distList
         Seq.head sortedList
@@ -54,11 +55,11 @@ type Wolf(startPos:position, repTimeDefault:int, feedTimeDefault:int, brd:Board<
     override this.prioritize (actSeq : action seq) = 
         if (this.feedTime < feedTimeDefault / 2) && not (Seq.isEmpty (this.actSeqOf "Eat" actSeq)) then 
             this.chooseRandom (this.actSeqOf "Eat" actSeq)  
-        elif (this.feedTime < feedTimeDefault / 2) && not (Seq.isEmpty (this.nearbyMoose this.pos)) then
+        elif (this.feedTime < feedTimeDefault / 2) && not (Seq.isEmpty (this.nearbyMoose())) then
             this.huntMoose (this.actSeqOf "Move" actSeq)
         elif this.repTime = 0 then 
             this.chooseRandom (this.actSeqOf "Reproduce" actSeq)
-        elif not (Seq.isEmpty (this.nearbyMoose this.pos)) then
+        elif not (Seq.isEmpty (this.nearbyMoose())) then
             this.huntMoose (this.actSeqOf "Move" actSeq)
         elif not (Seq.isEmpty (this.actSeqOf "Move" actSeq)) then 
             this.chooseRandom (this.actSeqOf "Move" actSeq)

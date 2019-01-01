@@ -36,11 +36,13 @@ type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
         seq {
             for act in actSeq do
                 let a = this.animalAt(this.getCords act)
-                match act with
-                | Move(x,y) when a = None || a = Some this -> yield Move(x,y)
-                | Reproduce(x,y) when a = None -> yield Reproduce(x,y)
-                | Eat(x,y) when a <> None -> yield Eat(x,y)
-                | _ -> () 
+                let (x,y) = this.getCords act
+                if x >= 0 && x < brd.size && y >= 0 && y < brd.size then
+                    match act with
+                    | Move(x,y) when a = None || a = Some this -> yield Move(x,y)
+                    | Reproduce(x,y) when a = None -> yield Reproduce(x,y)
+                    | Eat(x,y) when a <> None -> yield Eat(x,y)
+                    | _ -> () 
         }
 
 
