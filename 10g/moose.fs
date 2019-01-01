@@ -51,7 +51,7 @@ type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
             this.chooseRandom moveSeq
 
     override this.execute act =
-        //printfn "%s%A did %A" this.represent this.pos act 
+        printfn "%s%A did %A" this.represent this.pos act 
         match act with
         | Move(p) -> this.pos <- p
         | Reproduce(p) -> 

@@ -6,6 +6,10 @@ open Board
 open System
 type Environment(time : int, filename:string, boardSize : int, startMooseCount:int, mooseRepTime:int, startWolfCount:int, wolfRepTime:int, wolfFeedTime:int) =
     member val brd = Board<Animal>(boardSize) with get,set  
+    
+    member this.count str =
+        List.length (List.filter (fun (a:Animal) -> a.represent = str) this.brd.getContent)
+
     member this.print() = 
         let cords : Animal option[,] = Array2D.init boardSize boardSize (fun _ _ -> None)
         
@@ -53,11 +57,13 @@ type Environment(time : int, filename:string, boardSize : int, startMooseCount:i
         let createMoose (x,y) =
             this.brd.insert(Moose((x,y),mooseRepTime,this.brd))
         selcords createWolf (selcords createMoose cords startMooseCount) startWolfCount |> ignore 
-        
+        let fileStart = "Wolves,Moose"
         let rec loop i =
             if i > 0 then 
                 this.print()
-                List.iter (fun (a:Animal) -> a.takeTurn()) this.brd.getContent 
-                loop (i-1)
-            else this.print()
-        do loop time
+                List.iter (fun (a:Animal) -> a.takeTurn()) this.brd.getContent
+                (sprintf "%i,%i" (this.count "W") (this.count "M"))::loop (i-1)
+            else 
+                do this.print()
+                ["\n"]
+        IO.File.WriteAllText(filename,String.concat "\n" (fileStart::loop time))
