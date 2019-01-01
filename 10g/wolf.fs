@@ -27,16 +27,17 @@ type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
     // Finds the nearest moose to the action Move(x,y) from all nearbyMoose to that position.
     // Returns a tuple consisting of the number of moves to the nearest
     // moose, and the position given as an argument. 
-    member this.nearestMoose (Move(x,y) : action) = 
+    member this.nearestMoose ((x,y) : position) = 
         let moose = this.nearbyMoose (x,y)
-        let distList = Seq.map (fun elem -> (this.distanceTo (Move(x,y)) elem, (x,y))) moose 
+        let distList = Seq.map (fun elem -> (this.distanceTo (x,y) elem, (x,y))) moose 
         let sortedList = Seq.sortBy (fun elem -> fst elem) distList
         Seq.head sortedList
 
     // Selects the Move action that puts the animal most near a moose
     member this.huntMoose (actSeq : action seq) : action = 
         let moves = this.actSeqOf "Move" actSeq 
-        let distList = Seq.map (fun elem -> this.nearestMoose elem) moves
+        
+        let distList = Seq.map (fun elem -> this.nearestMoose (this.getCords elem)) moves
         let sortedList = Seq.sortBy (fun elem -> fst elem) distList
         Move(snd (Seq.head sortedList))
         
@@ -63,7 +64,7 @@ type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
     override this.tick () =
         this.repTime <- this.repTime - 1
         this.feedTime <- this.feedTime - 1
-        if this.feedTime <= 0 then this.die()
+        if this.feedTime <= 0 then this.die() |> ignore
 // prioritizing:
 
 // 1: Hvis sult < XXXX -> Så jagt elge

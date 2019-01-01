@@ -42,12 +42,15 @@ type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
         }
 
 
+    member this.getCords(act:action) = 
+        match act with
+        | Eat(x,y) -> (x,y)
+        | Move(x,y) -> (x,y)
+        | Reproduce(x,y) -> (x,y)
     // Finds the number of moves required to go from position
     // Move(x1,y1) to (x2,y2)
-    member this.distanceTo (Move(x1,y1) : action) ((x2,y2) : position) = 
-        let d1,d2 = (abs (x2-x1) , abs (y2-y1)) 
-        if d1 > d2 then d1 else d2 
-
+    member this.distanceTo ((x1,y1) : position) ((x2,y2) : position) = 
+        max (abs (x2-x1)) (abs (y2-y1))
     // Returns a list consisting of the action specified with actionName
     member this.actSeqOf (actionName : string) (actSeq : action seq) =
         Seq.choose (fun elem -> 
@@ -90,6 +93,6 @@ type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
 
     member this.die () =
         brd.delete(this)
-        this.alive = false
+        this.alive <- false
     
     
