@@ -11,8 +11,9 @@ type action = Move of position
 
 [<AbstractClass>]
 type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
-    let generateMoves ((x,y) : position) =
+    member this.generateMoves() =
         let actionTypes = FSharpType.GetUnionCases typeof<action>
+        let (x,y) = this.pos
         seq {
             for actionType in actionTypes do
                 for i=(-1) to 1 do
@@ -25,19 +26,19 @@ type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
                               |_ -> Eat(x+i, y+j)
         }
 
-    let _animalAt x y : Animal option=
+    member this.animalAt((x,y) : position) : Animal option=
         let lst = brd.getContent
         match List.filter (fun (a:Animal) -> a.pos = (x,y)) lst with
         | a::t  -> Some a
         | _     -> None
 
-    let filterInvalidActions (actSeq: action seq) =
+    member this.filterInvalidActions (actSeq: action seq) =
         seq {
             for act in actSeq do
                 match act with
-                | Move(x,y) when _animalAt x y = None -> yield Move(x,y)
-                | Reproduce(x,y) when _animalAt x y = None -> yield Reproduce(x,y)
-                | Eat(x,y) when _animalAt x y <> None -> yield Eat(x,y)
+                | Move(x,y) when this.animalAt(x,y) = None -> yield Move(x,y)
+                | Reproduce(x,y) when this.animalAt(x,y) = None -> yield Reproduce(x,y)
+                | Eat(x,y) when this.animalAt(x,y) <> None -> yield Eat(x,y)
                 | _ -> () 
         }
 
@@ -63,9 +64,6 @@ type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
         let rnd = System.Random()
         Seq.item (rnd.Next(Seq.length actSeq)) actSeq 
 
-
-
-    member this.animalAt = _animalAt
     member val repTime = repTimeDefault with get,set
     member this.resetRepTime () = this.repTime <- repTimeDefault 
     member val pos = startPos with get,set
@@ -85,8 +83,8 @@ type Animal(startPos:position, repTimeDefault:int, brd:Board<Animal>) =
     abstract member execute : action -> unit
     member this.takeTurn() =
         if this.alive then 
-            let availableActions = generateMoves(this.pos)
-            let legalActions = filterInvalidActions(availableActions)
+            let availableActions = this.generateMoves()
+            let legalActions = this.filterInvalidActions(availableActions)
             let prioritizedAction = this.prioritize(legalActions)
             this.execute(prioritizedAction)
             this.tick()

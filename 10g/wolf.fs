@@ -2,12 +2,10 @@ module Wolf
 open Board
 open Animal
 
-type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
-    inherit Animal(pos,repTime,brd)
+type Wolf(startPos:position, repTimeDefault:int, feedTimeDefault:int, brd:Board<Animal>) =
+    inherit Animal(startPos,repTimeDefault,brd)
 
     let viewLength = 2
-
-    let mutable _feedTime = feedTime
 
     // Returns sequence of position of moose that are within view of the 
     // given position. 
@@ -16,7 +14,7 @@ type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
         seq {
             for i = (-viewLength) to viewLength do 
                 for j = (-viewLength) to viewLength do 
-                    match this.animalAt (x+i)  (y+j) with
+                    match this.animalAt((x+i),(y+j)) with
                     | Some(a) -> match a with
                                  | :? Wolf -> ()
                                  | _ -> yield (x+i, y+j) 
@@ -40,12 +38,23 @@ type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
         let distList = Seq.map (fun elem -> this.nearestMoose (this.getCords elem)) moves
         let sortedList = Seq.sortBy (fun elem -> fst elem) distList
         Move(snd (Seq.head sortedList))
-        
+    override this.execute act =
+        match act with 
+        | Move(p) -> this.pos <- p
+        | Reproduce(p) ->
+            brd.insert(Wolf(p,repTimeDefault,feedTimeDefault,brd))
+            this.resetRepTime()
+        | Eat(x,y) ->
+            this.feedTime <- feedTimeDefault
+            match this.animalAt(x,y) with
+            | Some(a) -> a.die()
+            | None -> failwith "Trying to eat a None"
+
     // Selects action
     override this.prioritize (actSeq : action seq) = 
-        if (this.feedTime < 5) && not (Seq.isEmpty (this.actSeqOf "Eat" actSeq)) then 
+        if (this.feedTime < feedTimeDefault / 2) && not (Seq.isEmpty (this.actSeqOf "Eat" actSeq)) then 
             this.chooseRandom (this.actSeqOf "Eat" actSeq)  
-        elif (this.feedTime < 5) && not (Seq.isEmpty (this.nearbyMoose this.pos)) then
+        elif (this.feedTime < feedTimeDefault / 2) && not (Seq.isEmpty (this.nearbyMoose this.pos)) then
             this.huntMoose (this.actSeqOf "Move" actSeq)
         elif this.repTime = 0 then 
             this.chooseRandom (this.actSeqOf "Reproduce" actSeq)
@@ -58,15 +67,12 @@ type Wolf(pos:position, repTime:int, feedTime:int, brd:Board<Animal>) as this =
 
 
     override this.represent = "W"
-    member this.feedTime
-        with get() = _feedTime
-        and set(newFeedTime) = _feedTime <- newFeedTime
-
+    member val feedTime = feedTimeDefault with get,set
 
     override this.tick () =
         this.repTime <- this.repTime - 1
         this.feedTime <- this.feedTime - 1
-        if this.feedTime <= 0 then this.die() |> ignore
+        if this.feedTime <= 0 then this.die()
 // prioritizing:
 
 // 1: Hvis sult < XXXX -> Så jagt elge
