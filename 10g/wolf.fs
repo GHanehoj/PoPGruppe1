@@ -11,7 +11,6 @@ type Wolf(startPos:position, repTimeDefault:int, feedTimeDefault:int, brd:Board<
 
     // Returns sequence of position of moose that are within view of the 
     // given position. 
-    // (Skal muligvis boxe brd.findAtCoordinate(x+i, y+i) for ikke at få error) 
     member this.nearbyMoose () = 
         let (x,y) = this.pos
         seq {
