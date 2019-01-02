@@ -29,8 +29,9 @@ let wlf = Wolf ((2,2), 10, 10, brd)
 let moose = Moose ((3,3), 10, brd)
 brd.insert wlf
 brd.insert moose
+let content = brd.getContent
 printfn "brd.getContent, forventer output [wlf; moose] eller [moose; wlf]: %A" 
-    (brd.getContent = [wlf; moose] || brd.getContent = [moose; wlf])
+    (content = [wlf; moose] || content = [moose; wlf])
 
 printfn ""
 printfn "Test af Moose: "
