@@ -4,7 +4,8 @@ open Wolf
 open Moose
 open Board
 open System
-type Environment(time : int, filename:string, boardSize : int, startMooseCount:int, mooseRepTime:int, startWolfCount:int, wolfRepTime:int, wolfFeedTime:int) =
+type Environment(time : int, filename:string, boardSize : int, startMooseCount:int, 
+    mooseRepTime:int, startWolfCount:int, wolfRepTime:int, wolfFeedTime:int) =
     member val brd = Board<Animal>(boardSize) with get,set  
     
     member this.count str =
