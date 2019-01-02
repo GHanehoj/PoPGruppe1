@@ -6,6 +6,8 @@ type Wolf(startPos:position, repTimeDefault:int, feedTimeDefault:int, brd:Board<
     inherit Animal(startPos,repTimeDefault,brd)
 
     let viewLength = 2
+    override this.represent = "W"
+    member val feedTime = feedTimeDefault with get,set
 
     // Returns sequence of position of moose that are within view of the 
     // given position. 
@@ -39,20 +41,7 @@ type Wolf(startPos:position, repTimeDefault:int, feedTimeDefault:int, brd:Board<
         let distList = Seq.map (fun elem -> this.nearestMoose (this.getCords elem)) moves
         let sortedList = Seq.sortBy (fun elem -> fst elem) distList
         Move(snd (Seq.head sortedList))
-    override this.execute act =
-        printfn "%s%A did %A" this.represent this.pos act
-        match act with 
-        | Move(p) -> this.pos <- p
-        | Reproduce(p) ->
-            brd.insert(Wolf(p,repTimeDefault,feedTimeDefault,brd))
-            this.resetRepTime()
-        | Eat(x,y) ->
-            this.feedTime <- feedTimeDefault
-            match this.animalAt(x,y) with
-            | Some(a) -> a.die()
-            | None -> failwith "Trying to eat a None"
-    member this.noWolves actSeq =
-        Seq.filter
+ 
     // Selects action
     override this.prioritize (actSeq : action seq) = 
         let isNotWolf (act : action) =
@@ -78,18 +67,22 @@ type Wolf(startPos:position, repTimeDefault:int, feedTimeDefault:int, brd:Board<
             this.huntMoose moveSeq
         else
             this.chooseRandom moveSeq
-
-
-    override this.represent = "W"
-    member val feedTime = feedTimeDefault with get,set
+   
+    // Takes the action given
+    override this.execute act =
+        printfn "%s%A did %A" this.represent this.pos act
+        match act with 
+        | Move(p) -> this.pos <- p
+        | Reproduce(p) ->
+            brd.insert(Wolf(p,repTimeDefault,feedTimeDefault,brd))
+            this.resetRepTime()
+        | Eat(x,y) ->
+            this.feedTime <- feedTimeDefault
+            match this.animalAt(x,y) with
+            | Some(a) -> a.die()
+            | None -> failwith "Trying to eat a None"
 
     override this.tick () =
         this.repTime <- this.repTime - 1
         this.feedTime <- this.feedTime - 1
         if this.feedTime <= 0 then this.die()
-// prioritizing:
-
-// 1: Hvis sult < XXXX -> Så jagt elge
-// 2: formering hvis muligt
-// 3: Jagt elge
-// 4: flyt tilfældigt

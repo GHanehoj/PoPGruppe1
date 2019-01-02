@@ -3,13 +3,10 @@ open Animal
 open Board
 type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
     inherit Animal(startPos,repTimeDefault,brd)
-
     let viewLength = 1
     
     // Returns sequence of position of wolves that are within view of the 
     // given position. 
-    // (Skal muligvis boxe brd.findAtCoordinate(x+i, y+i) for ikke at få error) 
-    // Kan denne elegant gøres til en abstrakt klasse? 
     member this.nearbyWolves () =
         let (x,y) = this.pos 
         seq {
@@ -22,7 +19,6 @@ type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
                     | _ -> ()
         }
 
-    
     // Finds the nearest wolf to the position (x,y) from all nearbyWolves to that position.
     // Returns a tuple consisting of the number of moves to the nearest
     // wolf, and the position given as an argument. 
@@ -50,6 +46,7 @@ type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
         else
             this.chooseRandom moveSeq
 
+    // Takes the action given
     override this.execute act =
         printfn "%s%A did %A" this.represent this.pos act 
         match act with
@@ -61,8 +58,3 @@ type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
     override this.represent = "M"
     override this.tick () =
         this.repTime <- this.repTime - 1
-// prioritizing:
-
-// 1: flygt fra ulv
-// 2: formering hvis muligt
-// 3: Flyt tilfældigt

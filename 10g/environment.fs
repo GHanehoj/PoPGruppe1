@@ -10,6 +10,7 @@ type Environment(time : int, filename:string, boardSize : int, startMooseCount:i
     member this.count str =
         List.length (List.filter (fun (a:Animal) -> a.represent = str) this.brd.getContent)
 
+    // Prints the board
     member this.print() = 
         let cords : Animal option[,] = Array2D.init boardSize boardSize (fun _ _ -> None)
         
@@ -31,7 +32,7 @@ type Environment(time : int, filename:string, boardSize : int, startMooseCount:i
         
         Array2D.iteri iter cords
            
-        
+    // Main function.
     member this.startSimulation() =
         this.brd <- Board<Animal>(boardSize)
         let cords = [for x in 0..boardSize-1 do for y in 0..boardSize-1 -> (x,y)]
