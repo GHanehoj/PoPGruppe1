@@ -37,7 +37,7 @@ type Moose(startPos:position, repTimeDefault:int,brd:Board<Animal>) =
         let moves = this.actSeqOf "Move" actSeq  
         let distList = Seq.map (fun elem -> this.nearestWolf (this.getCords elem)) moves
         let sortedList = Seq.sortBy (fun elem -> fst elem) distList
-        Move(snd (Seq.head sortedList))
+        Move(snd (Seq.last sortedList))
         
     // Selects action
     override this.prioritize (actSeq : action seq) =
