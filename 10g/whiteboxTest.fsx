@@ -8,22 +8,6 @@ open Environment
 
 printfn "White-box Test"
 
-let env = Environment (10, "wb.txt", 10, 30, 8, 2, 12, 4)
-
-env.startSimulation
-
-// Environment:
-
-// brd with get and set
-
-// this.count str
-
-// this.print 
-
-// this.startSimulation
-
-
-// Board: (Disse bliver nok brugt uden for og behøver derfor ikke explicit at testes)
 printfn ""
 printfn "Test af Board:"
 printfn "Initialiserer et board med størrelsen 10 ved følgende:"
