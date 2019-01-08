@@ -4,6 +4,8 @@ open Chess
 // An abstract chess piece 
 [<AbstractClass>]
 type Player(board : Board, color : Color) =
+  override this.ToString () = color.ToString()
+
   member val color = color with get,set
   abstract member nextMove : unit -> string
 
@@ -17,9 +19,11 @@ type Human (board : Board, color : Color) =
     if input <> "quit" then
       if input.Length = 4 then
         match board.Code2Pos input.[0..1] with
-        | Some pos ->       
+        | Some origin ->       
           match board.Code2Pos input.[2..3] with
-          | Some pos -> input
+          | Some target ->
+            if origin <> target then input
+            else this.nextMove()
           | _ -> this.nextMove()
         | _ -> this.nextMove()
       else this.nextMove()
