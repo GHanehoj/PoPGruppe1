@@ -76,20 +76,10 @@ and Board () =
     |> List.choose validPositionWrap
 
   let codeChar2Int (codeChar : char) (coordAxis : int) : int option =
-    match coordAxis with
-    | 0 -> 
-      let codeCharInt = int codeChar - int 'a'
-      if codeCharInt >= 0 && codeCharInt < 8 then
-        Some codeCharInt
-      else
-        None
-    | 1 ->
-      let codeCharInt = int codeChar - int '1'
-      if codeCharInt >= 0 && codeCharInt < 8 then
-        Some codeCharInt
-      else
-        None
-    | _ -> failwith "invalid coodAxis input to codeChar2Int"
+    match int codeChar with
+    | x when x-(int 'a')>=0 && x-(int 'a')<8 && coordAxis=0 -> Some (x-(int 'a'))
+    | x when x-(int '1')>=0 && x-(int '1')<8 && coordAxis=1 -> Some (x-(int '1'))
+    | _ -> None
 
   // Board is indexed using .[,] notation
   member this.Item
