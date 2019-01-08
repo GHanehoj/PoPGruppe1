@@ -7,9 +7,6 @@ type Game () =
     let run (brd : Board, p1 : Player, p2 : Player) =
         let mutable gameOver = false 
         let mutable currentPlayer = p1
-        
-        //Initiate board here
-        
         printfn "%A" brd
 
         // Game loop
