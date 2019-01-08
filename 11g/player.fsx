@@ -19,12 +19,25 @@ type Human (board : Board, color : Color) =
     if input <> "quit" then
       if input.Length = 4 then
         match board.Code2Pos input.[0..1] with
-        | Some origin ->       
-          match board.Code2Pos input.[2..3] with
-          | Some target ->
-            if origin <> target then input
-            else this.nextMove()
-          | _ -> this.nextMove()
-        | _ -> this.nextMove()
-      else this.nextMove()
+        | Some origin ->
+          match board.[fst origin, snd origin] with
+          | Some piece when piece.color = this.color ->       
+            match board.Code2Pos input.[2..3] with
+            | Some target ->
+              if origin <> target then input
+              else 
+                printfn "Invalid move: Cant move to the same position" 
+                this.nextMove()
+            | _ -> 
+              printfn "Invalid move: Second coordinate was invalid" 
+              this.nextMove()
+          | _ -> 
+            printfn "Invalid move: First coordinate must contain one of your pieces" 
+            this.nextMove()
+        | _ -> 
+          printfn "Invalid move: First coordinate was invalid" 
+          this.nextMove()
+      else 
+        printfn "Invalid move: Input should only be 4 characters ex. a1b2" 
+        this.nextMove()
     else "quit"

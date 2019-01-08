@@ -162,3 +162,6 @@ and Board () =
       if fstCoord.IsSome && sndCoord.IsSome then
         returnVal <- Some (fstCoord.Value, sndCoord.Value)
     returnVal
+
+  member this.init () = 
+    ()
