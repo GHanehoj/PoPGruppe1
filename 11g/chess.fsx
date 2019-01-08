@@ -75,6 +75,22 @@ and Board () =
     // Choose absolute positions that are on the board
     |> List.choose validPositionWrap
 
+  let codeChar2Int (codeChar : char) (coordAxis : int) : int option =
+    match coordAxis with
+    | 0 -> 
+      let codeCharInt = int codeChar - int 'a'
+      if codeCharInt >= 0 && codeCharInt < 8 then
+        Some codeCharInt
+      else
+        None
+    | 1 ->
+      let codeCharInt = int codeChar - int '1'
+      if codeCharInt >= 0 && codeCharInt < 8 then
+        Some codeCharInt
+      else
+        None
+    | _ -> failwith "invalid coodAxis input to codeChar2Int"
+
   // Board is indexed using .[,] notation
   member this.Item
     with get(a : int, b : int) = _array.[a, b]
@@ -147,3 +163,12 @@ and Board () =
       for j=0 to 7 do
         returnBoard.[i,j] <- this.[i,j]
     returnBoard
+
+  member this.Code2Pos (code : string) : Position option =
+    let mutable (returnVal : Position option) = None
+    if code.Length = 2 then
+      let fstCoord = codeChar2Int code.[0] 0
+      let sndCoord = codeChar2Int code.[1] 1
+      if fstCoord.IsSome && sndCoord.IsSome then
+        returnVal <- Some (fstCoord.Value, sndCoord.Value)
+    returnVal

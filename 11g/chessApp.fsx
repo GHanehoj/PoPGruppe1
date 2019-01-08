@@ -1,7 +1,9 @@
 #load "chess.fsx"
 #load "pieces.fsx"
+#load "player.fsx"
 open Chess
 open Pieces
+open Player
 /// Print various information about a piece
 let printPiece (board : Board) (p : chessPiece) : unit =
   printfn "%A: %A %A" p p.position (p.availableMoves board true)
@@ -13,6 +15,8 @@ let pieces = [|
   king (White) :> chessPiece;
   rook (White) :> chessPiece;
   rook (Black) :> chessPiece |]
+
+let player1 = Human(board, White)
   
 // Place pieces on the board
 board.[3,1] <- Some pieces.[0]
@@ -24,3 +28,5 @@ Array.iter (printPiece board) pieces
 board.move (1,1) (6,1) // Moves a piece from (1,1) to (3,1)
 printfn "%A" board
 Array.iter (printPiece board) pieces
+
+printfn "%A" (player1.nextMove())
