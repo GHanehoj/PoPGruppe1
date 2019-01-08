@@ -18,15 +18,17 @@ type Human (board : Board, color : Color) =
     let input = System.Console.ReadLine()
     if input <> "quit" then
       if input.Length = 4 then
-        match board.Code2Pos input.[0..1] with
+        match board.code2Pos input.[0..1] with
         | Some origin ->
           match board.[fst origin, snd origin] with
-          | Some piece when piece.color = this.color ->       
-            match board.Code2Pos input.[2..3] with
+          | Some piece when piece.color = this.color ->   
+            match board.code2Pos input.[2..3] with
             | Some target ->
-              if origin <> target then input
-              else 
-                printfn "Invalid move: Cant move to the same position" 
+              let availMoves = (piece.availableMoves board true)
+              if List.contains target (fst availMoves) || List.exists (fun (availTarget : chessPiece) -> availTarget.position.Value = target) (snd availMoves) then 
+                input
+              else
+                printfn "Invalid move: Move was not valid for this piece" 
                 this.nextMove()
             | _ -> 
               printfn "Invalid move: Second coordinate was invalid" 

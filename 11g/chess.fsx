@@ -154,7 +154,7 @@ and Board () =
         returnBoard.[i,j] <- this.[i,j]
     returnBoard
 
-  member this.Code2Pos (code : string) : Position option =
+  member this.code2Pos (code : string) : Position option =
     let mutable (returnVal : Position option) = None
     if code.Length = 2 then
       let fstCoord = codeChar2Int code.[0] 0

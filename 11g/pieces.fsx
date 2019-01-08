@@ -58,4 +58,4 @@ type knight (col : Color) =
     override this.candiateRelativeMoves =
         [[(-1,2)];[(1,2)];[(-1,-2)];[(1,-2)];
         [(2,1)];[(2,-1)];[(-2,1)];[(-2,-1)]]
-    override this.nameOfType = "knight"
+    override this.nameOfType = "night"

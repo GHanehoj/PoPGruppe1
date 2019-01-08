@@ -6,7 +6,7 @@ open Pieces
 type Game () = 
     let run (brd : Board, p1 : Player, p2 : Player) =
         let mutable gameOver = false 
-        let mutable currentPlayer = p2
+        let mutable currentPlayer = p1
         
         //Initiate board here
         
@@ -20,8 +20,9 @@ type Game () =
                 printfn "%A has resigned." currentPlayer
                 gameOver <- true 
             else 
-                // Execute action 
-                ()
+                let origin = brd.code2Pos playerAction.[0..1]
+                let target = brd.code2Pos playerAction.[2..3]
+                brd.move origin.Value target.Value
 
             printfn "%A" brd
             if currentPlayer = p1 then
