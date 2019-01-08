@@ -22,8 +22,37 @@ type chessPiece(color : Color) =
   abstract member candiateRelativeMoves : Position list list
 
   // Available moves and neighbours ([(1,0); (2,0);...], [p1; p2])
-  member this.availableMoves (board : Board) : (Position list * chessPiece list) =
-    board.getVacantNNeighbours this
+  member this.availableMoves (board : Board) (firstCall : bool) : (Position list * chessPiece list) =
+    // Helper function to check if a board-state is valid (king isnt vulnurable).
+    let checkValid (brd : Board) : bool =
+      let mutable valid = true
+      for i=0 to 7 do
+        for j=0 to 7 do
+          let (pieceOption : chessPiece option) = brd.[i,j]
+          match pieceOption with
+          | Some piece ->
+            let (pieceMoves, pieceAttacks) = piece.availableMoves brd false
+            if List.exists (fun (elm:chessPiece) -> elm.color = this.color && elm.nameOfType = "king") pieceAttacks then
+              valid <- false
+          | _ -> ()
+      valid
+
+    let mutable (availMoves, availAttacks) = board.getVacantNNeighbours this
+    
+    if firstCall then
+      for move in availMoves do
+        let hypoBoard = board.Clone()
+        hypoBoard.move this.position.Value move
+        if not (checkValid hypoBoard) then
+          availMoves <- List.filter (fun elm -> elm <> move) availMoves
+      
+      for target in availAttacks do
+        let hypoBoard = board.Clone()
+        hypoBoard.move this.position.Value target.position.Value
+        if not (checkValid hypoBoard) then
+          availAttacks <- List.filter (fun elm -> elm <> target) availAttacks
+    
+    (availMoves,availAttacks)
 
 // A board
 and Board () =
@@ -109,7 +138,12 @@ and Board () =
         // Extract and merge lists of vacant squares
         let vacant = List.collect fst vacantPieceLists
         // Extract and merge lists of first obstruction pieces and filter out own pieces
-        let opponent = 
-          vacantPieceLists
-          |> List.choose snd 
+        let opponent = vacantPieceLists |> List.choose snd |> List.filter (fun elm -> elm.color <> piece.color)
         (vacant, opponent)
+
+  member this.Clone() : Board = 
+    let returnBoard = Board()
+    for i=0 to 7 do
+      for j=0 to 7 do
+        returnBoard.[i,j] <- this.[i,j]
+    returnBoard
