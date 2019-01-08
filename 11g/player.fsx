@@ -1,7 +1,7 @@
 module Player
 #load "pieces.fsx"
 open Chess
-// An abstract chess piece 
+// An abstract Player, so a future implementation of AI is easily possible 
 [<AbstractClass>]
 type Player(board : Board, color : Color) =
   override this.ToString () = color.ToString()
@@ -25,6 +25,7 @@ type Human (board : Board, color : Color) =
             match board.code2Pos input.[2..3] with
             | Some target ->
               let availMoves = (piece.availableMoves board true)
+              // .Value is used, as a chessPiece always only will appear in availMoves if its position isn't None
               if List.contains target (fst availMoves) || List.exists (fun (availTarget : chessPiece) -> availTarget.position.Value = target) (snd availMoves) then 
                 input
               else
@@ -40,6 +41,6 @@ type Human (board : Board, color : Color) =
           printfn "Invalid move: First coordinate was invalid" 
           this.nextMove()
       else 
-        printfn "Invalid move: Input should only be 4 characters ex. a1b2" 
+        printfn "Invalid move: Input should be exactly 4 characters ex. a1b2" 
         this.nextMove()
     else "quit"

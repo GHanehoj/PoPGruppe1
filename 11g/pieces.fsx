@@ -8,7 +8,7 @@ type king(col : Color) =
   override this.candiateRelativeMoves =
       [[(-1,0)];[(-1,1)];[(0,1)];[(1,1)];
       [(1,0)];[(1,-1)];[(0,-1)];[(-1,-1)]]
-
+// A queen is a chessPiece which moves any number of squares in any direction
 type queen (col : Color) =
     inherit chessPiece(col)
     let indToRel = [
@@ -25,7 +25,6 @@ type queen (col : Color) =
         List.map (swap List.map [1..7]) indToRel
     override this.nameOfType = "queen"
 
-
 // A rook is a ChessPiece which moves horisontally and vertically
 type rook (col : Color) =
     inherit chessPiece(col)
@@ -39,7 +38,7 @@ type rook (col : Color) =
         List.map (swap List.map [1..7]) indToRel
     override this.nameOfType = "rook"
 
-  // A bishop is a ChessPiece which moves diagonally
+// A bishop is a ChessPiece which moves diagonally
 type bishop (col : Color) =
     inherit chessPiece(col)
     let indToRel = [
