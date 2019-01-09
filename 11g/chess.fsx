@@ -75,6 +75,8 @@ and Board () =
     // Choose absolute positions that are on the board
     |> List.choose validPositionWrap
 
+  // Helper-function to code2Pos. Converts a char to an int.
+  // Returns None if char is not between 1-8 or a-h.
   let codeChar2Int (codeChar : char) (coordAxis : int) : int option =
     match int codeChar with
     | x when x-(int 'a')>=0 && x-(int 'a')<8 && coordAxis=0 -> Some (x-(int 'a'))
@@ -147,6 +149,7 @@ and Board () =
         let opponent = vacantPieceLists |> List.choose snd |> List.filter (fun elm -> elm.color <> piece.color)
         (vacant, opponent)
 
+  // Returns a copy of the board.
   member this.Clone() : Board = 
     let returnBoard = Board()
     for i=0 to 7 do
@@ -159,6 +162,8 @@ and Board () =
           for j = 0 to 7 do
               this.[i,j] <- this.[i,j] // resetting any positions changed by the clone
 
+  // Converts player input from string to position.
+  // Returns None if either the first or the second coordinate is None.
   member this.code2Pos (code : string) : Position option =
     let mutable (returnVal : Position option) = None
     if code.Length = 2 then
