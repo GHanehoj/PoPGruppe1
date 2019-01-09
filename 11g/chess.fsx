@@ -45,13 +45,13 @@ type chessPiece(color : Color) =
         hypoBoard.move this.position.Value move
         if not (checkValid hypoBoard) then
           availMoves <- List.filter (fun elm -> elm <> move) availMoves
-      
+        board.reset()
       for target in availAttacks do
         let hypoBoard = board.Clone()
         hypoBoard.move this.position.Value target.position.Value
         if not (checkValid hypoBoard) then
           availAttacks <- List.filter (fun elm -> elm <> target) availAttacks
-    
+        board.reset()
     (availMoves,availAttacks)
 
 // A board
@@ -153,12 +153,18 @@ and Board () =
       for j=0 to 7 do
         returnBoard.[i,j] <- this.[i,j]
     returnBoard
+  
+    member this.reset() =
+      for i = 0 to 7 do
+          for j = 0 to 7 do
+              this.[i,j] <- this.[i,j] // resetting any positions changed by the clone
 
   member this.code2Pos (code : string) : Position option =
     let mutable (returnVal : Position option) = None
     if code.Length = 2 then
-      let fstCoord = codeChar2Int code.[0] 0
-      let sndCoord = codeChar2Int code.[1] 1
+      // swap first and second to fit with the rest of the code
+      let fstCoord = codeChar2Int code.[1] 1
+      let sndCoord = codeChar2Int code.[0] 0
       if fstCoord.IsSome && sndCoord.IsSome then
         returnVal <- Some (fstCoord.Value, sndCoord.Value)
     returnVal

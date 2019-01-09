@@ -26,6 +26,7 @@ type Human (board : Board, color : Color) =
             | Some target ->
               let availMoves = (piece.availableMoves board true)
               // .Value is used, as a chessPiece always only will appear in availMoves if its position isn't None
+              printfn "%A" availMoves
               if List.contains target (fst availMoves) || List.exists (fun (availTarget : chessPiece) -> availTarget.position.Value = target) (snd availMoves) then 
                 input
               else
